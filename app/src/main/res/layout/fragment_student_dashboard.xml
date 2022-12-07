@@ -6,67 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#e4e4e4"
-    tools:context=".DashboardActivity"
+    tools:context=".StudentDashboardFragment"
     tools:ignore="HardcodedText">
 
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="128dp"
-        android:background="@drawable/custom_rectangle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/backB"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="20dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center|start"
-        android:padding="8dp"
-        android:src="@drawable/back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="16dp"
-        android:gravity="center_horizontal"
-        android:letterSpacing="0.025"
-        android:text="Dashboard"
-        android:textColor="@color/white"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/backB"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/logOutB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center|start"
-        android:padding="8dp"
-        android:src="@drawable/logout"
-        app:layout_constraintCircleRadius="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/studentCardView"
         android:layout_width="match_parent"
         android:layout_height="128dp"
         android:layout_marginStart="16dp"
@@ -77,29 +21,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cardItems"
+            android:id="@+id/studentCardItems"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/studentName"
+                android:id="@+id/studentNameRow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:padding="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/cardItems"
+                app:layout_constraintTop_toTopOf="@id/studentCardItems"
                 android:paddingTop="10dp"
                 android:paddingLeft="20dp"
                 android:text="Name : "
@@ -113,7 +58,8 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/cardItems"
+                app:layout_constraintTop_toTopOf="@id/studentCardItems"
+                android:id="@+id/studentName"
                 android:paddingTop="10dp"
                 android:paddingStart="10dp"
                 android:text="User Name"
@@ -129,18 +75,18 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:padding="0dp"
-                android:id="@+id/studentId"
+                android:id="@+id/studentIdRow"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/studentName">
+                app:layout_constraintTop_toBottomOf="@id/studentNameRow">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/cardItems"
+                    app:layout_constraintTop_toTopOf="@id/studentCardItems"
                     android:paddingTop="10dp"
                     android:paddingLeft="20dp"
                     android:text="ID : "
@@ -154,7 +100,8 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/cardItems"
+                    app:layout_constraintTop_toTopOf="@id/studentCardItems"
+                    android:id="@+id/studentId"
                     android:text="12345"
                     android:textAllCaps="true"
                     android:textColor="@color/colorPrimary"
@@ -168,18 +115,18 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:padding="0dp"
-                android:id="@+id/studentEmail"
+                android:id="@+id/studentEmailRow"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/studentId">
+                app:layout_constraintTop_toBottomOf="@id/studentIdRow">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/cardItems"
+                    app:layout_constraintTop_toTopOf="@id/studentCardItems"
                     android:paddingTop="10dp"
                     android:paddingLeft="20dp"
                     android:text="Email: "
@@ -193,7 +140,8 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/cardItems"
+                    app:layout_constraintTop_toTopOf="@id/studentCardItems"
+                    android:id="@+id/studentEmail"
                     android:text="12345@gmail.com"
                     android:inputType="textEmailAddress"
                     android:textColor="@color/colorPrimary"
@@ -220,10 +168,10 @@
         android:weightSum="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView">
+        app:layout_constraintTop_toBottomOf="@+id/studentCardView">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/contributeCard"
+            android:id="@+id/teachersCard"
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:layout_margin="8dp"
@@ -270,7 +218,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/practiceCard"
+            android:id="@+id/stExamsCard"
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:layout_margin="8dp"
@@ -330,7 +278,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/learnCard"
+            android:id="@+id/stSubjectsCard"
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:layout_margin="8dp"
@@ -377,7 +325,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/interestsCard"
+            android:id="@+id/stProfileCard"
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:layout_margin="8dp"

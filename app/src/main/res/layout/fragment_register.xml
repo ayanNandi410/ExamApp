@@ -98,28 +98,21 @@
             android:fontFamily="@font/roboto_regular"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginBottom="30dp"
             android:layout_centerInParent="true"
             android:textColor="@android:color/white"
             android:text="@string/register"/>
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_arrow_left"
-            android:layout_above="@id/swipeLeft"
-            android:layout_centerHorizontal="true"/>
-
-        <TextView
-            android:id="@+id/swipeLeft"
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/swipe_right_for_login"
-            android:textSize="15sp"
-            android:fontFamily="@font/roboto_regular"
+            android:id="@+id/goToLogin"
+            android:layout_below="@id/btn_register"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginTop="5dp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="italic"
+            android:text="Go to Login"/>
 
     </RelativeLayout>
 
