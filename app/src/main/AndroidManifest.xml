@@ -23,11 +23,12 @@
         android:icon="@drawable/main"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:usesCleartextTraffic="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.ExamApp"
         tools:targetApi="31">
         <activity
-            android:name=".FileUploadActivity"
+            android:name=".StudentExamListActivity"
             android:exported="true">
             <meta-data
                 android:name="android.app.lib_name"
@@ -37,6 +38,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".FileUploadActivity"
+            android:exported="true">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
         </activity>
         <activity
             android:name=".teacher_dashboard"
@@ -54,13 +62,10 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:exported="true"  >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
-
-
         </activity>
         <activity
             android:name=".DashboardActivity"

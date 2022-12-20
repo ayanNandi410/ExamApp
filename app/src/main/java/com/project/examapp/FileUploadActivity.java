@@ -45,7 +45,7 @@ public class FileUploadActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 9544;
     ImageView image;
     Button btn_upload;
-    Uri selectedImage;
+    Uri selectedFile;
     String part_image;
 
     // Permissions for accessing the storage
@@ -62,18 +62,31 @@ public class FileUploadActivity extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             Intent data = result.getData();
-                            selectedImage = data.getData();                                                         // Get the image file URI
-                            String[] imageProjection = {MediaStore.Images.Media.DATA};
-                            Cursor cursor = getContentResolver().query(selectedImage, imageProjection, null, null, null);
+                            selectedFile = data.getData(); // Get the image file URI
+                            String mimeType = getContentResolver().getType(selectedFile);
+                            Log.d(TAG," URL :" +mimeType);
+                           String contentData;
+                            if ("image".equals(mimeType.substring(0,5))) {
+                                contentData = MediaStore.Images.Media.DATA;
+                            } else if ("video".equals(mimeType.substring(0,5))) {
+                                contentData = MediaStore.Video.Media.DATA;
+                            } else if ("audio".equals(mimeType.substring(0,5))) {
+                                contentData = MediaStore.Audio.Media.DATA;
+                            } else {
+                                contentData = MediaStore.Files.FileColumns.MEDIA_TYPE;
+                            }
+
+                            String[] imageProjection = {contentData};
+                            Cursor cursor = getContentResolver().query(selectedFile, imageProjection, null, null, null);
                             if(cursor != null) {
                                 cursor.moveToFirst();
-                                int indexImage = cursor.getColumnIndex(imageProjection[0]);
+                                int indexImage = cursor.getColumnIndex(contentData);
                                 part_image = cursor.getString(indexImage);
                                 imgPath.setText(part_image);    // Get the image file absolute path
-                                Log.d(TAG," URL :" +selectedImage);
+                                Log.d(TAG," URL :" +part_image);
                                 Bitmap bitmap = null;
                                 try {
-                                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
+                                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedFile);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
