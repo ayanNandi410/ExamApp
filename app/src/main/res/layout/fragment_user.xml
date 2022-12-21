@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Authentication.UserFragment">
+    tools:context=".ProfileFragment">
 
 
     <ImageView
@@ -202,24 +202,6 @@
         android:textSize="15sp"
         android:fontFamily="@font/roboto_regular"
         android:textColor="#5E5A5A"
-        />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign Out"
-        android:id="@+id/signOut"
-        app:layout_constraintTop_toBottomOf="@+id/user_phone"
-        android:layout_marginTop="50dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
-        android:drawableTint="#CDE53935"
-        android:textSize="15sp"
-        android:fontFamily="@font/roboto_regular"
-        android:textColor="@color/white"
-        android:background="@color/teal_700"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

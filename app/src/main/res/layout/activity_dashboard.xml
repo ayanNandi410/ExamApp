@@ -6,14 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".DashboardActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#e4e4e4"
-        tools:context=".DashboardActivity"
-        tools:ignore="HardcodedText">
-
         <View
             android:id="@+id/view"
             android:layout_width="match_parent"
@@ -71,17 +63,14 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <FrameLayout
         android:id="@+id/fragment_dashboard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="80dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp">
+        android:layout_marginTop="70dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="15dp">
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

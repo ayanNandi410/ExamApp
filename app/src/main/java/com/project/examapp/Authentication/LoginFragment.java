@@ -78,6 +78,8 @@ public class LoginFragment extends Fragment {
         EditText text_email = view.findViewById(R.id.et_email);
         EditText text_psd = view.findViewById(R.id.et_password);
         Button btnClick = view.findViewById(R.id.btn_login);
+        Button btnRegister = view.findViewById(R.id.goToRegister);
+
         btnClick.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -87,5 +89,15 @@ public class LoginFragment extends Fragment {
                 Log.d(TAG, "Account added");
             }
         });
+
+        btnRegister.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                ((MainActivity)getActivity()).sign_up();
+            }
+        });
+
     }
 }

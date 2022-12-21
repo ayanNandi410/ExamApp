@@ -19,7 +19,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.project.examapp.Authentication.LoginFragment;
 import com.project.examapp.Authentication.RegisterFragment;
-import com.project.examapp.Authentication.UserFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -140,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("email", user.getEmail());
         bundle.putString("name",user.getDisplayName());
-        UserFragment fragUser = new UserFragment();
+        ProfileFragment fragUser = new ProfileFragment();
         fragUser.setArguments(bundle);
 
         transaction.replace(R.id.fragment_container_view, fragUser);

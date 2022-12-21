@@ -79,6 +79,8 @@ public class RegisterFragment extends Fragment {
         EditText text_pswd = view.findViewById(R.id.et_password);
         EditText text_name = view.findViewById(R.id.et_name);
         Button btnClick = view.findViewById(R.id.btn_register);
+        Button btnLogin = view.findViewById(R.id.goToLogin);
+
         btnClick.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -86,6 +88,15 @@ public class RegisterFragment extends Fragment {
             {
                 ((MainActivity) getActivity()).createAccount(text_email.getText().toString(),text_pswd.getText().toString(),text_name.getText().toString());
                 Log.d(TAG, "Account added");
+            }
+        });
+
+        btnLogin.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                ((MainActivity)getActivity()).sign_in();
             }
         });
     }
