@@ -33,6 +33,10 @@ public class ExamsAdapter extends ArrayAdapter<Exam> {
         examName.setText(exam.getExamName());
         examDesc.setText(exam.getDescription());
         examSubject.setText(exam.getSubject_id());
+
+        //clicking an exam
+
+
         // Return the completed view to render on screen
         return convertView;
     }

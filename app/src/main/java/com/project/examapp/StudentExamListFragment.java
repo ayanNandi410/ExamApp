@@ -1,5 +1,6 @@
 package com.project.examapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,6 +30,7 @@ public class StudentExamListFragment extends Fragment {
     ExamsAdapter adapter;
     RetrofitClient client;
     ExamApi examApi;
+    ListView listView;
 
     public StudentExamListFragment() {
         // Required empty public constructor
@@ -64,7 +67,7 @@ public class StudentExamListFragment extends Fragment {
                     adapter = new ExamsAdapter(getContext(), examList);
 
                     // Attach the adapter to a ListView
-                    ListView listView = (ListView) getView().findViewById(R.id.stdExamListView);
+                    listView = (ListView) getView().findViewById(R.id.stdExamListView);
                     listView.setAdapter(adapter);
                 }
             }
@@ -74,5 +77,19 @@ public class StudentExamListFragment extends Fragment {
                 Log.e("Fetch Exam List","FAILURE");
             }
         });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                toTakeExam();
+            }
+        });
+    }
+
+    public void toTakeExam()
+    {
+        Intent takeExamIntent = new Intent(getActivity(),ExamPageActivity.class);
+        startActivity(takeExamIntent);
+        getActivity().finish();
     }
 }
