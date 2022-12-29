@@ -19,12 +19,15 @@ public class DashboardActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
+    private String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        Intent intent = new Intent();
+        type = intent.getStringExtra("type");
         mAuth = FirebaseAuth.getInstance();
 
     }
@@ -35,12 +38,17 @@ public class DashboardActivity extends AppCompatActivity {
         super.onStart();
         user = mAuth.getCurrentUser();
 
-        toStudentDashboard();
+        if(type=="student"){
+            toStudentDashboard();
+        }
+        else{
+            toTeacherDashboard();
+        }
 
-        ImageButton signout = findViewById(R.id.logOutB);
+        ImageButton signOut = findViewById(R.id.logOutB);
         ImageButton backButton = findViewById(R.id.backB);
 
-        signout.setOnClickListener(new View.OnClickListener()
+        signOut.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -69,6 +77,20 @@ public class DashboardActivity extends AppCompatActivity {
         transaction.commit();
     }
 
+    public void teachersListFrag(){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragment_dashboard, new StudentTeachersListFragment());
+        transaction.commit();
+    }
+
+    public void subjectsFrag(){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragment_dashboard, new SubjectsFragment());
+        transaction.commit();
+    }
+
     public void profileFrag(){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -86,6 +108,13 @@ public class DashboardActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         transaction.replace(R.id.fragment_dashboard, new StudentDashboardFragment());
+        transaction.commit();
+    }
+    public void toTeacherDashboard()
+    {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragment_dashboard, new TeacherDashboardFragment());
         transaction.commit();
     }
 }

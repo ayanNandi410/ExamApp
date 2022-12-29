@@ -13,55 +13,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.project.examapp.MainActivity;
 import com.project.examapp.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class LoginFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    String type;
     public LoginFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment LoginFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static LoginFragment newInstance(String param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+        type="None";
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -79,13 +45,40 @@ public class LoginFragment extends Fragment {
         EditText text_psd = view.findViewById(R.id.et_password);
         Button btnClick = view.findViewById(R.id.btn_login);
         Button btnRegister = view.findViewById(R.id.goToRegister);
+        RadioGroup radioGroup = view.findViewById(R.id.radioUserType);
+
+        // Uncheck or reset the radio buttons initially
+        radioGroup.clearCheck();
+
+        // Add the Listener to the RadioGroup
+        radioGroup.setOnCheckedChangeListener(
+                new RadioGroup
+                        .OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group,
+                                                 int checkedId)
+                    {
+                        // Get the selected Radio Button
+                        RadioButton radioButton = (RadioButton)group.findViewById(checkedId);
+                        // Check which radio button was clicked
+                        switch(radioButton.getId()) {
+                            case R.id.radio_student:
+                                type = "student";
+                                break;
+                            case R.id.radio_teacher:
+                                type = "teacher";
+                                break;
+                        }
+
+                    }
+                });
 
         btnClick.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                ((MainActivity) getActivity()).signIn(text_email.getText().toString(),text_psd.getText().toString());
+                ((MainActivity) getActivity()).signIn(text_email.getText().toString(),text_psd.getText().toString(),type);
                 Log.d(TAG, "Account added");
             }
         });

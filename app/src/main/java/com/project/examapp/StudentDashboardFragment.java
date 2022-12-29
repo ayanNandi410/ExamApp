@@ -54,10 +54,13 @@ public class StudentDashboardFragment extends Fragment {
         TextView stId = view.findViewById(R.id.studentId);
         CardView examsCrd = view.findViewById(R.id.stExamsCard);
         CardView profileCrd = view.findViewById(R.id.stProfileCard);
+        CardView teachersCrd = view.findViewById(R.id.teachersCard);
+        CardView subjectsCrd = view.findViewById(R.id.stSubjectsCard);
 
         stName.setText(currentUser.getDisplayName());
         stEmail.setText(currentUser.getEmail());
-        stId.setText(currentUser.getPhoneNumber());
+        stId.setText("Student");
+
         examsCrd.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,5 +75,18 @@ public class StudentDashboardFragment extends Fragment {
             }
         });
 
+        teachersCrd.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((DashboardActivity)getActivity()).teachersListFrag();
+            }
+        });
+
+        subjectsCrd.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((DashboardActivity)getActivity()).subjectsFrag();
+            }
+        });
     }
 }

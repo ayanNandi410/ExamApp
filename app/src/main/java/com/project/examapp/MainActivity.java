@@ -23,6 +23,7 @@ import com.project.examapp.Authentication.RegisterFragment;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private static String userType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-            dashboard();
+            dashboard(userType);
             //updateUI(currentUser);
         }
         else{
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
                                                 Log.d(TAG, "User profile updated.");
-                                                dashboard();
+                                                sign_in();
                                                 //updateUI(user);
                                             }
                                             else
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         // [END create_user_with_email]
     }
 
-    public void signIn(String email, String password) {
+    public void signIn(String email, String password, String type) {
         // [START sign_in_with_email]
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -105,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            dashboard();
+                            userType = type;
+                            dashboard(userType);
                             //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -147,8 +149,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void dashboard(){
+    private void dashboard(String type){
         Intent dbdIntent = new Intent(this, DashboardActivity.class);
+        dbdIntent.putExtra("type", type);
         startActivity(dbdIntent);
     }
 
