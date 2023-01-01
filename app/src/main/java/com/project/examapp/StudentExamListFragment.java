@@ -75,6 +75,7 @@ public class StudentExamListFragment extends Fragment {
             @Override
             public void onFailure(Call<ArrayList<Exam>> call, Throwable t) {
                 Log.e("Fetch Exam List","FAILURE");
+                Log.e("Fetch Exam list", t.toString());
             }
         });
 
