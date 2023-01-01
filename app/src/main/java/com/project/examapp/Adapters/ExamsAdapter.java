@@ -1,13 +1,17 @@
 package com.project.examapp.Adapters;
 
+import static com.google.android.gms.common.api.internal.LifecycleCallback.getFragment;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.project.examapp.R;
+import com.project.examapp.StudentExamListFragment;
 import com.project.examapp.models.Exam;
 
 import java.util.ArrayList;
@@ -18,7 +22,9 @@ public class ExamsAdapter extends ArrayAdapter<Exam> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
+
         // Get the data item for this position
         Exam exam = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
@@ -33,9 +39,6 @@ public class ExamsAdapter extends ArrayAdapter<Exam> {
         examName.setText(exam.getExamName());
         examDesc.setText(exam.getDescription());
         examSubject.setText(exam.getSubject_id());
-
-        //clicking an exam
-
 
         // Return the completed view to render on screen
         return convertView;

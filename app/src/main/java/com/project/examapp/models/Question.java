@@ -7,7 +7,8 @@ public class Question {
     private String b;
     private String c;
     private String d;
-    private String correct_answer;
+    private String answer;
+    private String marks;
     private String type;
 
     public String getQuestion() {
@@ -58,12 +59,12 @@ public class Question {
         this.d = d;
     }
 
-    public String getCorrect_answer() {
-        return correct_answer;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setCorrect_answer(String correct_answer) {
-        this.correct_answer = correct_answer;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 
     public String getType() {
@@ -72,5 +73,9 @@ public class Question {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getMarks() {
+        return marks;
     }
 }

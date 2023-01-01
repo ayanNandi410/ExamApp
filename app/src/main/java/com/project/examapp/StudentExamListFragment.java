@@ -69,6 +69,13 @@ public class StudentExamListFragment extends Fragment {
                     // Attach the adapter to a ListView
                     listView = (ListView) getView().findViewById(R.id.stdExamListView);
                     listView.setAdapter(adapter);
+
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            toTakeExam(i);
+                        }
+                    });
                 }
             }
 
@@ -77,21 +84,14 @@ public class StudentExamListFragment extends Fragment {
                 Log.e("Fetch Exam List","FAILURE");
             }
         });
-
-        if(listView!=null)
-        {
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    toTakeExam();
-                }
-            });
-        }
     }
 
-    public void toTakeExam()
+    public void toTakeExam(int i)
     {
+
+        String exam_id = adapter.getItem(i).getExam_id();
         Intent takeExamIntent = new Intent(getActivity(),ExamPageActivity.class);
+        takeExamIntent.putExtra("exam_id",exam_id);
         startActivity(takeExamIntent);
         getActivity().finish();
     }

@@ -1,6 +1,7 @@
 package com.project.examapp.models;
 
 public class Exam {
+    private String exam_id;
     private String name;
     private String description;
     private String subject_id;
@@ -38,5 +39,14 @@ public class Exam {
 
     public void setSubject_id(String subject_id) {
         this.subject_id = subject_id;
+    }
+
+
+    public String getExam_id() {
+        return exam_id;
+    }
+
+    public void setExam_id(String exam_id) {
+        this.exam_id = exam_id;
     }
 }

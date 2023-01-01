@@ -35,13 +35,6 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".teacher_dashboard"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name=".ExamPageActivity"
             android:exported="false">
             <meta-data

@@ -20,7 +20,12 @@ import com.project.examapp.MainActivity;
 import com.project.examapp.R;
 
 public class LoginFragment extends Fragment {
+
     String type;
+    EditText text_email, text_psd;
+    Button btnClick, btnToRegister;
+    RadioGroup radioGroup;
+
     public LoginFragment() {
         type="None";
     }
@@ -41,11 +46,11 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        EditText text_email = view.findViewById(R.id.et_email);
-        EditText text_psd = view.findViewById(R.id.et_password);
-        Button btnClick = view.findViewById(R.id.btn_login);
-        Button btnRegister = view.findViewById(R.id.goToRegister);
-        RadioGroup radioGroup = view.findViewById(R.id.radioUserType);
+        text_email = view.findViewById(R.id.et_email);
+        text_psd = view.findViewById(R.id.et_password);
+        btnClick = view.findViewById(R.id.btn_login);
+        btnToRegister = view.findViewById(R.id.goToRegister);
+        radioGroup = view.findViewById(R.id.radioUserType);
 
         // Uncheck or reset the radio buttons initially
         radioGroup.clearCheck();
@@ -78,12 +83,14 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v)
             {
-                ((MainActivity) getActivity()).signIn(text_email.getText().toString(),text_psd.getText().toString(),type);
-                Log.d(TAG, "Account added");
+                if(CheckAllFields()){
+                    ((MainActivity) getActivity()).signIn(text_email.getText().toString(),text_psd.getText().toString(),type);
+                    Log.d(TAG, "Account added");
+                }
             }
         });
 
-        btnRegister.setOnClickListener(new View.OnClickListener()
+        btnToRegister.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -92,5 +99,30 @@ public class LoginFragment extends Fragment {
             }
         });
 
+    }
+
+
+    private boolean CheckAllFields() {
+
+        if (text_email.length() == 0) {
+            text_email.setError("This field is required");
+            return false;
+        }
+
+        if(!android.util.Patterns.EMAIL_ADDRESS.matcher(text_email.getText().toString()).matches()){
+            text_email.setError("Not an email address");
+            return false;
+        }
+
+        if (text_psd.length() == 0) {
+            text_psd.setError("Password is required");
+            return false;
+        } else if (text_psd.length() < 8) {
+            text_psd.setError("Password must be minimum 8 characters");
+            return false;
+        }
+
+        // after all validation return true.
+        return true;
     }
 }

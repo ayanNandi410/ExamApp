@@ -110,6 +110,7 @@ public class DashboardActivity extends AppCompatActivity {
         transaction.replace(R.id.fragment_dashboard, new StudentDashboardFragment());
         transaction.commit();
     }
+
     public void toTeacherDashboard()
     {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

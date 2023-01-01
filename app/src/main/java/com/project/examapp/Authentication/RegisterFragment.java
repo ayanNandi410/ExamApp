@@ -17,51 +17,18 @@ import android.widget.EditText;
 import com.project.examapp.MainActivity;
 import com.project.examapp.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link RegisterFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RegisterFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    EditText text_email, text_pswd, text_name, text_rep_pswd;
+    Button btnClick, btnLogin;
 
     public RegisterFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RegisterFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RegisterFragment newInstance(String param1, String param2) {
-        RegisterFragment fragment = new RegisterFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -75,19 +42,22 @@ public class RegisterFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        EditText text_email = view.findViewById(R.id.et_email);
-        EditText text_pswd = view.findViewById(R.id.et_password);
-        EditText text_name = view.findViewById(R.id.et_name);
-        Button btnClick = view.findViewById(R.id.btn_register);
-        Button btnLogin = view.findViewById(R.id.goToLogin);
+        text_email = view.findViewById(R.id.et_email);
+        text_pswd = view.findViewById(R.id.et_password);
+        text_name = view.findViewById(R.id.et_name);
+        text_rep_pswd = view.findViewById(R.id.et_repassword);
+        btnClick = view.findViewById(R.id.btn_register);
+        btnLogin = view.findViewById(R.id.goToLogin);
 
         btnClick.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                ((MainActivity) getActivity()).createAccount(text_email.getText().toString(),text_pswd.getText().toString(),text_name.getText().toString());
-                Log.d(TAG, "Account added");
+                if(CheckAllFields()) {
+                    ((MainActivity) getActivity()).createAccount(text_email.getText().toString(),text_pswd.getText().toString(),text_name.getText().toString());
+                    Log.d(TAG, "Account added");
+                }
             }
         });
 
@@ -99,6 +69,39 @@ public class RegisterFragment extends Fragment {
                 ((MainActivity)getActivity()).sign_in();
             }
         });
+    }
+
+    private boolean CheckAllFields() {
+        if (text_name.length() == 0) {
+            text_name.setError("This field is required");
+            return false;
+        }
+
+        if (text_email.length() == 0) {
+            text_email.setError("This field is required");
+            return false;
+        }
+
+        if(!android.util.Patterns.EMAIL_ADDRESS.matcher(text_email.getText().toString()).matches()){
+            text_email.setError("Not an email address");
+            return false;
+        }
+
+        if (text_pswd.length() == 0) {
+            text_pswd.setError("Password is required");
+            return false;
+        } else if (text_pswd.length() < 8) {
+            text_pswd.setError("Password must be minimum 8 characters");
+            return false;
+        }
+
+        if((text_pswd.length()!=0)&&(text_rep_pswd.length()!=0)&&(text_rep_pswd.getText().toString().compareTo(text_pswd.getText().toString())!=0)){
+            text_rep_pswd.setError("Two passwords do not match");
+            return false;
+        }
+
+        // after all validation return true.
+        return true;
     }
 
 
