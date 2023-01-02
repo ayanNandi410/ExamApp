@@ -1,6 +1,7 @@
 package com.project.examapp.models;
 
 public class Question {
+    private String id;
     private String question;
     private String exam_id;
     private String a;
@@ -10,6 +11,15 @@ public class Question {
     private String answer;
     private String marks;
     private String type;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 
     public String getQuestion() {
         return question;
