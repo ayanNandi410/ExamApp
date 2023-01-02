@@ -71,6 +71,8 @@ public class ExamQuestionFragment extends Fragment {
         next =  view.findViewById(R.id.nextQuestion);
         submit = view.findViewById(R.id.submit);
 
+        submit.setVisibility(View.INVISIBLE);
+
         startExam();
 
         prev.setOnClickListener( new View.OnClickListener() {
@@ -128,8 +130,8 @@ public class ExamQuestionFragment extends Fragment {
     }
 
     private void setQuestionDetails(Question qs){
-        question.setText(qs.getQuestion());
-        marks.setText(qs.getMarks());
+        question.setText("Q"+ (pos + 1) +". "+qs.getQuestion());
+        marks.setText("Marks : "+qs.getMarks());
         a.setText(qs.getA());
         b.setText(qs.getB());
         c.setText(qs.getC());
@@ -137,15 +139,29 @@ public class ExamQuestionFragment extends Fragment {
     }
 
     private void nextQuestion(){
-        if(pos + 1 >= qsArray.size()) return;
         pos = pos + 1;
+        if(pos==(qsArray.size()-1))
+        {
+            next.setVisibility(View.INVISIBLE);
+            submit.setVisibility(View.VISIBLE);
+        }
+        if(pos!=0)
+        {
+            prev.setVisibility(View.VISIBLE);
+        }
         setQuestionDetails(qsArray.get(pos));
     }
 
     private void prevQuestion(){
-        if(pos - 1 < 0) return;
         pos = pos - 1;
-
+        if(pos==0)
+        {
+            prev.setVisibility(View.INVISIBLE);
+        }
+        if(pos!=(qsArray.size()-1))
+        {
+            next.setVisibility(View.VISIBLE);
+        }
         setQuestionDetails(qsArray.get(pos));
     }
 
