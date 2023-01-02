@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.project.examapp.MainActivity;
 import com.project.examapp.R;
 
 public class LoginFragment extends Fragment {

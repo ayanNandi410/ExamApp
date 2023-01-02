@@ -1,4 +1,4 @@
-package com.project.examapp;
+package com.project.examapp.Dashboard;
 
 import static android.content.ContentValues.TAG;
 
@@ -13,6 +13,12 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.project.examapp.Authentication.MainActivity;
+import com.project.examapp.R;
+import com.project.examapp.Dashboard.student.StudentDashboardFragment;
+import com.project.examapp.Dashboard.student.StudentExamListFragment;
+import com.project.examapp.Dashboard.teacher.StudentTeachersListFragment;
+import com.project.examapp.Dashboard.teacher.TeacherDashboardFragment;
 
 
 public class DashboardActivity extends AppCompatActivity {
@@ -55,7 +61,7 @@ public class DashboardActivity extends AppCompatActivity {
             {
                 mAuth.signOut();
                 Log.d(TAG, "Signed out");
-                Intent sOut = new Intent(DashboardActivity.this,MainActivity.class);
+                Intent sOut = new Intent(DashboardActivity.this, MainActivity.class);
                 startActivity(sOut);
             }
         });

@@ -1,4 +1,4 @@
-package com.project.examapp;
+package com.project.examapp.Dashboard.teacher;
 
 import android.os.Bundle;
 
@@ -11,11 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.project.examapp.Adapters.ExamsAdapter;
 import com.project.examapp.Adapters.TeachersAdapter;
 import com.project.examapp.Api.StudentDashboardApi;
 import com.project.examapp.Api.RetrofitClient;
-import com.project.examapp.models.Exam;
+import com.project.examapp.R;
 import com.project.examapp.models.Teacher;
 
 import java.util.ArrayList;

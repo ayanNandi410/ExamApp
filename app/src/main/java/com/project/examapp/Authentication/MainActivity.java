@@ -1,4 +1,4 @@
-package com.project.examapp;
+package com.project.examapp.Authentication;
 
 import static android.content.ContentValues.TAG;
 
@@ -17,8 +17,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.project.examapp.Authentication.LoginFragment;
-import com.project.examapp.Authentication.RegisterFragment;
+import com.project.examapp.Dashboard.DashboardActivity;
+import com.project.examapp.Dashboard.ProfileFragment;
+import com.project.examapp.R;
 
 public class MainActivity extends AppCompatActivity {
 

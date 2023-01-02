@@ -42,7 +42,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".Authentication.MainActivity"
             android:exported="true"  >
             <meta-data
                 android:name="android.app.lib_name"
@@ -54,7 +54,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DashboardActivity"
+            android:name=".Dashboard.DashboardActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

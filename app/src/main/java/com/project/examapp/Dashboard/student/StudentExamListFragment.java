@@ -1,4 +1,4 @@
-package com.project.examapp;
+package com.project.examapp.Dashboard.student;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.project.examapp.Adapters.ExamsAdapter;
 import com.project.examapp.Api.StudentDashboardApi;
 import com.project.examapp.Api.RetrofitClient;
+import com.project.examapp.ExamPageActivity;
+import com.project.examapp.R;
 import com.project.examapp.models.Exam;
 
 import java.util.ArrayList;
@@ -91,7 +93,7 @@ public class StudentExamListFragment extends Fragment {
     {
 
         String exam_id = adapter.getItem(i).getExam_id();
-        Intent takeExamIntent = new Intent(getActivity(),ExamPageActivity.class);
+        Intent takeExamIntent = new Intent(getActivity(), ExamPageActivity.class);
         takeExamIntent.putExtra("exam_id",exam_id);
         startActivity(takeExamIntent);
         getActivity().finish();

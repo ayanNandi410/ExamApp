@@ -20,7 +20,7 @@ public class ExamQuestionFragment extends Fragment {
     List<Question> qsArray;
     List<String> answers;
     TextView question, marks;
-    Button a, b, c, d, prev, next;
+    Button a, b, c, d, prev, next, submit;
     int pos;
 
     public ExamQuestionFragment(List<Question> qsArray) {
@@ -51,6 +51,9 @@ public class ExamQuestionFragment extends Fragment {
         d = view.findViewById(R.id.choice4Button);
         prev =  view.findViewById(R.id.prevQuestion);
         next =  view.findViewById(R.id.nextQuestion);
+        submit = view.findViewById(R.id.Submit);
+
+        submit.setVisibility(View.INVISIBLE);
 
         startExam();
 
@@ -69,6 +72,8 @@ public class ExamQuestionFragment extends Fragment {
         });
 
 
+
+
     }
 
     private void startExam(){
@@ -77,8 +82,8 @@ public class ExamQuestionFragment extends Fragment {
     }
 
     private void setQuestionDetails(Question qs){
-        question.setText(qs.getQuestion());
-        marks.setText(qs.getMarks());
+        question.setText("Q"+ (pos + 1) +". "+qs.getQuestion());
+        marks.setText("Marks : "+qs.getMarks());
         a.setText(qs.getA());
         b.setText(qs.getB());
         c.setText(qs.getC());
@@ -87,11 +92,28 @@ public class ExamQuestionFragment extends Fragment {
 
     private void nextQuestion(){
         pos = pos + 1;
+        if(pos==(qsArray.size()-1))
+        {
+            next.setVisibility(View.INVISIBLE);
+            submit.setVisibility(View.VISIBLE);
+        }
+        if(pos!=0)
+        {
+            prev.setVisibility(View.VISIBLE);
+        }
         setQuestionDetails(qsArray.get(pos));
     }
 
     private void prevQuestion(){
         pos = pos - 1;
+        if(pos==0)
+        {
+            prev.setVisibility(View.INVISIBLE);
+        }
+        if(pos!=(qsArray.size()-1))
+        {
+            next.setVisibility(View.VISIBLE);
+        }
         setQuestionDetails(qsArray.get(pos));
     }
 }
