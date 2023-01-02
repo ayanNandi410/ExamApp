@@ -55,6 +55,7 @@ public class StudentExamListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        listView = (ListView) getView().findViewById(R.id.stdExamListView);
         Call<ArrayList<Exam>> callExamList = studentDashboardApi.getExamList();
         callExamList.enqueue(new Callback<ArrayList<Exam>>() {
             @Override
@@ -67,7 +68,6 @@ public class StudentExamListFragment extends Fragment {
                     adapter = new ExamsAdapter(getContext(), examList);
 
                     // Attach the adapter to a ListView
-                    listView = (ListView) getView().findViewById(R.id.stdExamListView);
                     listView.setAdapter(adapter);
 
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

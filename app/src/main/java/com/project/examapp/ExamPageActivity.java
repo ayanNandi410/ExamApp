@@ -11,8 +11,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.project.examapp.Api.GetQuestionApi;
 import com.project.examapp.Api.RetrofitClient;
+import com.project.examapp.models.Answer;
 import com.project.examapp.models.Question;
 
 import java.util.ArrayList;
@@ -30,6 +33,8 @@ public class ExamPageActivity extends AppCompatActivity {
     List<Question> qsList;
     TextView examName;
     ImageButton back;
+    ArrayList<Answer> answers;
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +48,7 @@ public class ExamPageActivity extends AppCompatActivity {
 
         examName = findViewById(R.id.ExamName);
         back = findViewById(R.id.backB);
-
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -60,6 +65,14 @@ public class ExamPageActivity extends AppCompatActivity {
                 if(response.isSuccessful()) {
                     Toast.makeText(ExamPageActivity.this, "Question List fetched", Toast.LENGTH_SHORT).show();
                     qsList = response.body();
+                    FirebaseUser user = mAuth.getCurrentUser();
+
+                    answers = new ArrayList<Answer>();
+                    for(int i = 0;i < qsList.size();i++){
+                        Question q = qsList.get(i);
+                        Answer a = new Answer(exam_id, q.getId(), user.getUid());
+                        answers.add(a);
+                    }
                     showQuestionFragment();
                 }
             }
@@ -67,6 +80,7 @@ public class ExamPageActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ArrayList<Question>> call, Throwable t) {
                 Log.e("Fetch Question List","FAILURE");
+                Log.e("Fetch Question list", t.toString());
             }
         });
     }
@@ -75,7 +89,7 @@ public class ExamPageActivity extends AppCompatActivity {
     {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.questionSet, new ExamQuestionFragment(qsList));
+        transaction.replace(R.id.questionSet, new ExamQuestionFragment(qsList, answers));
         transaction.commit();
     }
 }
