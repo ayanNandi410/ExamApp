@@ -1,5 +1,6 @@
 package com.project.examapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.project.examapp.Api.AnswerApi;
 import com.project.examapp.Api.GetQuestionApi;
 import com.project.examapp.Api.RetrofitClient;
+import com.project.examapp.Dashboard.DashboardActivity;
 import com.project.examapp.models.Answer;
 import com.project.examapp.models.Question;
 
@@ -92,25 +94,25 @@ public class ExamQuestionFragment extends Fragment {
         a.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setAnswer(a.getText().toString());
+                setAnswer("a");
             }
         });
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setAnswer(a.getText().toString());
+                setAnswer("b");
             }
         });
         c.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setAnswer(a.getText().toString());
+                setAnswer("c");
             }
         });
         d.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setAnswer(a.getText().toString());
+                setAnswer("d");
             }
         });
 
@@ -173,17 +175,20 @@ public class ExamQuestionFragment extends Fragment {
 
     private void submitAnswers(){
         Log.d("Submit answer", answers.toString());
-        Call<Integer> callAnswerPost = answerApi.postAnswers(answers);
-        callAnswerPost.enqueue(new Callback<Integer>() {
+        Call<Void> callAnswerPost = answerApi.postAnswers(answers);
+        callAnswerPost.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 if(response.isSuccessful()) {
                     Toast.makeText(getContext(), "Answers submitted", Toast.LENGTH_LONG).show();
+                    Intent takeExamIntent = new Intent(getActivity(), DashboardActivity.class);
+                    startActivity(takeExamIntent);
+                    getActivity().finish();
                 }
             }
 
             @Override
-            public void onFailure(Call<Integer> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 Log.e("Fetch Question List","FAILURE");
                 Log.e("Fetch Question list", t.toString());
             }
