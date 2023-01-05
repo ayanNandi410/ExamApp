@@ -1,8 +1,10 @@
 package com.project.examapp.Dashboard.student;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 import com.project.examapp.Adapters.ExamsAdapter;
 import com.project.examapp.Api.StudentDashboardApi;
 import com.project.examapp.Api.RetrofitClient;
+import com.project.examapp.Dashboard.DashboardActivity;
 import com.project.examapp.ExamPageActivity;
 import com.project.examapp.R;
 import com.project.examapp.models.Exam;
@@ -75,7 +78,7 @@ public class StudentExamListFragment extends Fragment {
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            toTakeExam(i);
+                            StartExamAlert(i);
                         }
                     });
                 }
@@ -97,5 +100,36 @@ public class StudentExamListFragment extends Fragment {
         takeExamIntent.putExtra("exam_id",exam_id);
         startActivity(takeExamIntent);
         getActivity().finish();
+    }
+
+    private void StartExamAlert(int i) {
+        // Create the object of AlertDialog Builder class
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        // Set the message show for the Alert time
+        builder.setMessage("Do you wish to start ?");
+
+        // Set Alert Title
+        builder.setTitle("Start Exam");
+
+        // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
+        builder.setCancelable(false);
+
+        // Set the positive button with yes name Lambda OnClickListener method is use of DialogInterface interface.
+        builder.setPositiveButton("Yes", (DialogInterface.OnClickListener) (dialog, which) -> {
+            // When the user click yes button then app will close
+            toTakeExam(i);
+        });
+
+        // Set the Negative button with No name Lambda OnClickListener method is use of DialogInterface interface.
+        builder.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog, which) -> {
+            // If user click no then dialog box is canceled.
+            dialog.cancel();
+        });
+
+        // Create the Alert dialog
+        AlertDialog alertDialog = builder.create();
+        // Show the Alert Dialog box
+        alertDialog.show();
     }
 }

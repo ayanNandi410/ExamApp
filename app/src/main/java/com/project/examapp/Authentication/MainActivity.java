@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
     private void dashboard(String type){
         Intent dbdIntent = new Intent(this, DashboardActivity.class);
         dbdIntent.putExtra("type", type);
+        this.finish();
         startActivity(dbdIntent);
     }
 

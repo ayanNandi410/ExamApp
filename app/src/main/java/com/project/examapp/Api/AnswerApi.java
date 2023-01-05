@@ -12,5 +12,5 @@ import retrofit2.http.POST;
 public interface AnswerApi {
     @Headers("Content-Type: application/json")
     @POST("/answer")
-    Call<Void> postAnswers(@Body ArrayList<Answer> body);
+    Call<Integer> postAnswers(@Body ArrayList<Answer> body);
 }

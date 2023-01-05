@@ -2,12 +2,14 @@ package com.project.examapp.Dashboard;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -26,6 +28,7 @@ public class DashboardActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private String type;
+    private boolean homeActive = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +47,7 @@ public class DashboardActivity extends AppCompatActivity {
         super.onStart();
         user = mAuth.getCurrentUser();
 
-        if(type=="student"){
-            toStudentDashboard();
-        }
-        else{
-            toTeacherDashboard();
-        }
+        toDashboard();
 
         ImageButton signOut = findViewById(R.id.logOutB);
         ImageButton backButton = findViewById(R.id.backB);
@@ -62,6 +60,7 @@ public class DashboardActivity extends AppCompatActivity {
                 mAuth.signOut();
                 Log.d(TAG, "Signed out");
                 Intent sOut = new Intent(DashboardActivity.this, MainActivity.class);
+                finish();
                 startActivity(sOut);
             }
         });
@@ -71,12 +70,52 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                toStudentDashboard();
+                if(homeActive){
+                    BackPress();
+                }
+                else
+                {
+                   toDashboard();
+                }
             }
         });
     }
 
+
+
+    private void BackPress() {
+        // Create the object of AlertDialog Builder class
+        AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
+
+        // Set the message show for the Alert time
+        builder.setMessage("Do you want to exit ?");
+
+        // Set Alert Title
+        builder.setTitle("Are you sure?");
+
+        // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
+        builder.setCancelable(false);
+
+        // Set the positive button with yes name Lambda OnClickListener method is use of DialogInterface interface.
+        builder.setPositiveButton("Yes", (DialogInterface.OnClickListener) (dialog, which) -> {
+            // When the user click yes button then app will close
+            finishAndRemoveTask();
+        });
+
+        // Set the Negative button with No name Lambda OnClickListener method is use of DialogInterface interface.
+        builder.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog, which) -> {
+            // If user click no then dialog box is canceled.
+            dialog.cancel();
+        });
+
+        // Create the Alert dialog
+        AlertDialog alertDialog = builder.create();
+        // Show the Alert Dialog box
+        alertDialog.show();
+    }
+
     public void examListFrag(){
+        homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         transaction.replace(R.id.fragment_dashboard, new StudentExamListFragment());
@@ -84,6 +123,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void teachersListFrag(){
+        homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         transaction.replace(R.id.fragment_dashboard, new StudentTeachersListFragment());
@@ -91,6 +131,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void subjectsFrag(){
+        homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         transaction.replace(R.id.fragment_dashboard, new SubjectsFragment());
@@ -98,6 +139,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void profileFrag(){
+        homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         Bundle bundle = new Bundle();
@@ -109,19 +151,15 @@ public class DashboardActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    public void toStudentDashboard()
-    {
+    private void toDashboard(){
+        homeActive = true;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        transaction.replace(R.id.fragment_dashboard, new StudentDashboardFragment());
-        transaction.commit();
-    }
-
-    public void toTeacherDashboard()
-    {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        transaction.replace(R.id.fragment_dashboard, new TeacherDashboardFragment());
+        if(type=="student"){
+            transaction.replace(R.id.fragment_dashboard, new StudentDashboardFragment());
+        }
+        else{
+            transaction.replace(R.id.fragment_dashboard, new TeacherDashboardFragment());
+        }
         transaction.commit();
     }
 }
