@@ -16,9 +16,11 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.project.examapp.Api.GetQuestionApi;
+import com.project.examapp.Api.ResultApi;
 import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.models.Answer;
 import com.project.examapp.models.Question;
+import com.project.examapp.models.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,11 @@ public class ExamPageActivity extends AppCompatActivity {
     Integer time, hr, min, sec;
     long endTime;
     GetQuestionApi questionApi;
+    ResultApi resultApi;
     List<Question> qsList;
+    List<Result> results;
+    TextView examName;
+    ImageButton back;
     TextView examName, examTime;
     ArrayList<Answer> answers;
 
@@ -70,6 +76,9 @@ public class ExamPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam_page);
+        client = RetrofitClient.getInstance();
+        questionApi = client.getRetrofit().create(GetQuestionApi.class);
+        resultApi = client.getRetrofit().create(ResultApi.class);
         handler = new Handler();
         // get exam id
         Intent intent = getIntent();
@@ -113,6 +122,27 @@ public class ExamPageActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ArrayList<Question>> call, Throwable t) {
+                Log.e("Fetch Question List","FAILURE");
+                Log.e("Fetch Question list", t.toString());
+            }
+        });
+
+        Call<ArrayList<Result>> callResultList = resultApi.getResults(exam_id);
+        callResultList.enqueue(new Callback<ArrayList<Result>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Result>> call, Response<ArrayList<Result>> response) {
+                if(response.isSuccessful()) {
+                    Toast.makeText(ExamPageActivity.this, "Results fetched", Toast.LENGTH_SHORT).show();
+                    results = response.body();
+                    FirebaseUser user = mAuth.getCurrentUser();
+
+                    answers = new ArrayList<Answer>();
+                    showQuestionFragment();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Result>> call, Throwable t) {
                 Log.e("Fetch Question List","FAILURE");
                 Log.e("Fetch Question list", t.toString());
             }
