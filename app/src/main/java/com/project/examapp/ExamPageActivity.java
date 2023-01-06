@@ -39,8 +39,6 @@ public class ExamPageActivity extends AppCompatActivity {
     ResultApi resultApi;
     List<Question> qsList;
     List<Result> results;
-    TextView examName;
-    ImageButton back;
     TextView examName, examTime;
     ArrayList<Answer> answers;
 

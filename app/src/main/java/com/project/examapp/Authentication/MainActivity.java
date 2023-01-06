@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             //updateUI(currentUser);
         }
         else{
-            sign_up();
+            sign_in();
         }
     }
     // [END on_start_check_user]

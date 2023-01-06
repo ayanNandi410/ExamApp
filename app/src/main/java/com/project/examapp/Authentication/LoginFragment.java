@@ -16,17 +16,18 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.project.examapp.Api.RegisterApi;
+import com.project.examapp.Api.RetrofitClient;
+import com.project.examapp.Api.StudentDashboardApi;
 import com.project.examapp.R;
 
 public class LoginFragment extends Fragment {
 
-    String type;
     EditText text_email, text_psd;
     Button btnClick, btnToRegister;
-    RadioGroup radioGroup;
+    String type = "student";
 
     public LoginFragment() {
-        type="None";
     }
 
     @Override
@@ -49,33 +50,6 @@ public class LoginFragment extends Fragment {
         text_psd = view.findViewById(R.id.et_password);
         btnClick = view.findViewById(R.id.btn_login);
         btnToRegister = view.findViewById(R.id.goToRegister);
-        radioGroup = view.findViewById(R.id.radioUserType);
-
-        // Uncheck or reset the radio buttons initially
-        radioGroup.clearCheck();
-
-        // Add the Listener to the RadioGroup
-        radioGroup.setOnCheckedChangeListener(
-                new RadioGroup
-                        .OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(RadioGroup group,
-                                                 int checkedId)
-                    {
-                        // Get the selected Radio Button
-                        RadioButton radioButton = (RadioButton)group.findViewById(checkedId);
-                        // Check which radio button was clicked
-                        switch(radioButton.getId()) {
-                            case R.id.radio_student:
-                                type = "student";
-                                break;
-                            case R.id.radio_teacher:
-                                type = "teacher";
-                                break;
-                        }
-
-                    }
-                });
 
         btnClick.setOnClickListener(new View.OnClickListener()
         {

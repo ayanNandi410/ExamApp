@@ -3,8 +3,8 @@ package com.project.examapp.models;
 public class Student {
     private String name;
     private String email;
-    private String roll_no;
-
+    private String id;
+    private String dept;
 
     public String getName() {
         return name;
@@ -22,11 +22,19 @@ public class Student {
         this.email = email;
     }
 
-    public String getRoll_no() {
-        return roll_no;
+    public String getId() {
+        return id;
     }
 
-    public void setRoll_no(String roll_no) {
-        this.roll_no = roll_no;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDept() {
+        return dept;
+    }
+
+    public void setDept(String dept) {
+        this.dept = dept;
     }
 }

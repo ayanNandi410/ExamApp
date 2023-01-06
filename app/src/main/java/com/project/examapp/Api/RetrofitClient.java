@@ -27,7 +27,7 @@ public class RetrofitClient {
                     public Response intercept(Chain chain) throws IOException {
                         Request.Builder requestBuilder = chain.request().newBuilder();
                         FirebaseUser user = mAuth.getCurrentUser();
-                        requestBuilder.header("x-id", user.getUid());
+                        //requestBuilder.header("x-id", user.getEmail());
                         return chain.proceed(requestBuilder.build());
                     }
                 }).build();

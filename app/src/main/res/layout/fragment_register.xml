@@ -85,7 +85,29 @@
         android:background="@drawable/et_custom"
         android:textSize="15sp" />
 
+        <RadioGroup
+            android:id="@+id/radioUserType"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:onClick="onRadioButtonClicked"
+            android:orientation="horizontal">
 
+            <RadioButton
+                android:id="@+id/radio_teacher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Teacher" />
+
+            <RadioButton
+                android:id="@+id/radio_student"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Student" />
+        </RadioGroup>
 
     <RelativeLayout
         android:layout_width="match_parent"
