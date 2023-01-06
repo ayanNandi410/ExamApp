@@ -3,6 +3,7 @@ package com.project.examapp.models;
 public class Exam {
     private String exam_id;
     private String name;
+    private Integer time;
     private String description;
     private String subject_id;
 
@@ -48,5 +49,13 @@ public class Exam {
 
     public void setExam_id(String exam_id) {
         this.exam_id = exam_id;
+    }
+
+    public Integer getTime() {
+        return time;
+    }
+
+    public void setTime(Integer time) {
+        this.time = time;
     }
 }

@@ -55,6 +55,7 @@ public class RegisterFragment extends Fragment {
             public void onClick(View v)
             {
                 if(CheckAllFields()) {
+                    Toast.makeText(getContext(), "Registered successfully", Toast.LENGTH_SHORT).show();
                     ((MainActivity) getActivity()).createAccount(text_email.getText().toString(),text_pswd.getText().toString(),text_name.getText().toString());
                     Log.d(TAG, "Account added");
                 }
@@ -66,7 +67,6 @@ public class RegisterFragment extends Fragment {
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(getContext(), "Registered successfully", Toast.LENGTH_SHORT).show();
                 ((MainActivity)getActivity()).sign_in();
             }
         });
