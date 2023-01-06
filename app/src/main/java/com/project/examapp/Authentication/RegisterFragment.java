@@ -23,6 +23,8 @@ import com.project.examapp.R;
 import com.project.examapp.models.Student;
 import com.project.examapp.models.Teacher;
 
+import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,7 +37,7 @@ public class RegisterFragment extends Fragment {
     String type;
     RetrofitClient client;
     RegisterApi registerApi;
-    Student student;
+    ArrayList<Student> student;
     Teacher teacher;
 
     public RegisterFragment() {
@@ -126,13 +128,13 @@ public class RegisterFragment extends Fragment {
     private boolean verifyUser(){
         final boolean[] verified = {false};
         if(type.equals("student")) {
-            Call<Student> callStudent = registerApi.getStudentByEmail(text_email.getText().toString());
-            callStudent.enqueue(new Callback<Student>() {
+            Call<ArrayList<Student>> callStudent = registerApi.getStudentByEmail(text_email.getText().toString());
+            callStudent.enqueue(new Callback<java.util.ArrayList<Student>>() {
                 @Override
-                public void onResponse(Call<Student> call, Response<Student> response) {
+                public void onResponse(Call<ArrayList<Student>> call, Response<ArrayList<Student>> response) {
                     if(response.isSuccessful()) {
                         student = response.body();
-                        if(student.getEmail().equals("notFound"))
+                        if(student.get(0).getEmail().equals("notFound"))
                         {
                             Toast.makeText(getContext(), "Student Email Id not found", Toast.LENGTH_SHORT).show();
                         }
@@ -144,7 +146,7 @@ public class RegisterFragment extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<Student> call, Throwable t) {
+                public void onFailure(Call<ArrayList<Student>> call, Throwable t) {
                     Log.e("User Verification","FAILURE");
                 }
             });

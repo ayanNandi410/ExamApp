@@ -3,7 +3,6 @@ package com.project.examapp.models;
 public class Student {
     private String name;
     private String email;
-    private String id;
     private String dept;
 
     public String getName() {
@@ -22,13 +21,6 @@ public class Student {
         this.email = email;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getDept() {
         return dept;
