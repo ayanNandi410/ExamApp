@@ -17,13 +17,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.project.examapp.Api.RegisterApi;
+import com.project.examapp.Api.UserApi;
 import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.R;
 import com.project.examapp.models.Student;
 import com.project.examapp.models.Teacher;
-
-import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,19 +34,21 @@ public class RegisterFragment extends Fragment {
     RadioGroup radioGroup;
     String type;
     RetrofitClient client;
-    RegisterApi registerApi;
-    ArrayList<Student> student;
+    UserApi userApi;
+    Student student;
     Teacher teacher;
+    boolean verified;
 
     public RegisterFragment() {
         type = null;
+        verified = false;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         client = RetrofitClient.getInstance();
-        registerApi = client.getRetrofit().create(RegisterApi.class);
+        userApi = client.getRetrofit().create(UserApi.class);
     }
 
     @Override
@@ -103,14 +103,7 @@ public class RegisterFragment extends Fragment {
             public void onClick(View v)
             {
                 if(CheckAllFields()) {
-                    if(!verifyUser()){
-                        Toast.makeText(getContext(), "Verify User failed", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        Toast.makeText(getContext(), "Registered successfully", Toast.LENGTH_SHORT).show();
-                        ((MainActivity) getActivity()).createAccount(text_email.getText().toString(),text_pswd.getText().toString(),text_name.getText().toString());
-                        Log.d(TAG, "Account added");
-                    }
+                    verifyUserAndRegister();
                 }
             }
         });
@@ -125,35 +118,40 @@ public class RegisterFragment extends Fragment {
         });
     }
 
-    private boolean verifyUser(){
-        final boolean[] verified = {false};
+    private void verifyUserAndRegister(){
         if(type.equals("student")) {
-            Call<ArrayList<Student>> callStudent = registerApi.getStudentByEmail(text_email.getText().toString());
-            callStudent.enqueue(new Callback<java.util.ArrayList<Student>>() {
+            Call<Student> callStudent = userApi.getStudentByEmail(text_email.getText().toString());
+            callStudent.enqueue(new Callback<Student>() {
                 @Override
-                public void onResponse(Call<ArrayList<Student>> call, Response<ArrayList<Student>> response) {
+                public void onResponse(Call<Student> call, Response<Student> response) {
                     if(response.isSuccessful()) {
                         student = response.body();
-                        if(student.get(0).getEmail().equals("notFound"))
+                        Log.e("student",student.getEmail().toString());
+                        if(student.getEmail().equals("notFound"))
                         {
                             Toast.makeText(getContext(), "Student Email Id not found", Toast.LENGTH_SHORT).show();
                         }
-                        else
+                        else if(!student.getName().equals(text_name.getText().toString()))
                         {
-                            verified[0] = true;
+                            Toast.makeText(getContext(), "Student Name not matching", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Toast.makeText(getContext(), "Registered successfully", Toast.LENGTH_SHORT).show();
+                            ((MainActivity) getActivity()).createAccount(text_email.getText().toString(),text_pswd.getText().toString(),text_name.getText().toString());
+                            Log.d(TAG, "Account added");
                         }
                     }
                 }
 
                 @Override
-                public void onFailure(Call<ArrayList<Student>> call, Throwable t) {
+                public void onFailure(Call<Student> call, Throwable t) {
                     Log.e("User Verification","FAILURE");
                 }
             });
         }
         else if(type.equals("teacher"))
         {
-            Call<Teacher> callTeacher = registerApi.getTeacherByEmail(text_email.getText().toString());
+            Call<Teacher> callTeacher = userApi.getTeacherByEmail(text_email.getText().toString());
             callTeacher.enqueue(new Callback<Teacher>() {
                 @Override
                 public void onResponse(Call<Teacher> call, Response<Teacher> response) {
@@ -163,9 +161,15 @@ public class RegisterFragment extends Fragment {
                         {
                             Toast.makeText(getContext(), "Teacher Email Id not found", Toast.LENGTH_SHORT).show();
                         }
+                        else if(!teacher.getName().equals(text_name.getText().toString()))
+                        {
+                            Toast.makeText(getContext(), "Teacher Name not matching", Toast.LENGTH_SHORT).show();
+                        }
                         else
                         {
-                            verified[0] = true;
+                            Toast.makeText(getContext(), "Registered successfully", Toast.LENGTH_SHORT).show();
+                            ((MainActivity) getActivity()).createAccount(text_email.getText().toString(),text_pswd.getText().toString(),text_name.getText().toString());
+                            Log.d(TAG, "Account added");
                         }
                     }
                 }
@@ -179,8 +183,6 @@ public class RegisterFragment extends Fragment {
         else{
             Log.e("User Type","NOT SET");
         }
-
-        return verified[0];
     }
 
 

@@ -1,6 +1,7 @@
 package com.project.examapp.Dashboard;
 
 import static android.content.ContentValues.TAG;
+import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,12 +17,21 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.project.examapp.Api.RetrofitClient;
+import com.project.examapp.Api.UserApi;
 import com.project.examapp.Authentication.MainActivity;
+import com.project.examapp.ProgressBarFragment;
 import com.project.examapp.R;
 import com.project.examapp.Dashboard.student.StudentDashboardFragment;
 import com.project.examapp.Dashboard.student.StudentExamListFragment;
 import com.project.examapp.Dashboard.teacher.StudentTeachersListFragment;
 import com.project.examapp.Dashboard.teacher.TeacherDashboardFragment;
+import com.project.examapp.models.Student;
+import com.project.examapp.models.Teacher;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class DashboardActivity extends AppCompatActivity {
@@ -29,25 +40,31 @@ public class DashboardActivity extends AppCompatActivity {
     private FirebaseUser user;
     private String type;
     private boolean homeActive = true;
+    private Student student;
+    private Teacher teacher;
+    private UserApi userApi;
+    private RetrofitClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        Intent intent = new Intent();
-        type = intent.getStringExtra("type");
         mAuth = FirebaseAuth.getInstance();
-
+        user = mAuth.getCurrentUser();
+        client = RetrofitClient.getInstance();
+        userApi = client.getRetrofit().create(UserApi.class);
+        student = null;
+        teacher = null;
+        type = null;
+        getUserDetails();
     }
 
     @Override
     protected void onStart() {
 
         super.onStart();
-        user = mAuth.getCurrentUser();
-
-        toDashboard();
+        showProgressBar();
 
         ImageButton signOut = findViewById(R.id.logOutB);
         ImageButton backButton = findViewById(R.id.backB);
@@ -81,7 +98,45 @@ public class DashboardActivity extends AppCompatActivity {
         });
     }
 
+    private void getUserDetails()
+    {
+            Call<Student> callStudent = userApi.getStudentByEmail(user.getEmail());
+            callStudent.enqueue(new Callback<Student>() {
+                @Override
+                public void onResponse(Call<Student> call, Response<Student> response) {
+                    if(response.isSuccessful()) {
+                        student = response.body();
+                        type = "student";
+                        Log.i("User Type","student");
+                        toDashboard();
+                    }
+                }
 
+                @Override
+                public void onFailure(Call<Student> call, Throwable t) {
+                    Log.e("Student","False");
+                }
+            });
+
+            Call<Teacher> callTeacher = userApi.getTeacherByEmail(user.getEmail());
+            callTeacher.enqueue(new Callback<Teacher>() {
+                @Override
+                public void onResponse(Call<Teacher> call, Response<Teacher> response) {
+                    if(response.isSuccessful()) {
+                        teacher = response.body();
+                        type = "teacher";
+                        Log.i("User Type","teacher");
+                        toDashboard();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Teacher> call, Throwable t) {
+                    Log.e("Teacher","False");
+                }
+            });
+
+    }
 
     private void BackPress() {
         // Create the object of AlertDialog Builder class
@@ -114,11 +169,18 @@ public class DashboardActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    private void showProgressBar(){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragment_dashboard, new ProgressBarFragment());
+        transaction.commit();
+    }
+
     public void examListFrag(){
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.fragment_dashboard, new StudentExamListFragment());
+        transaction.replace(R.id.fragment_dashboard, new StudentExamListFragment(student));
         transaction.commit();
     }
 
@@ -126,7 +188,7 @@ public class DashboardActivity extends AppCompatActivity {
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.fragment_dashboard, new StudentTeachersListFragment());
+        transaction.replace(R.id.fragment_dashboard, new StudentTeachersListFragment(student));
         transaction.commit();
     }
 
@@ -134,7 +196,7 @@ public class DashboardActivity extends AppCompatActivity {
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.fragment_dashboard, new SubjectsFragment());
+        transaction.replace(R.id.fragment_dashboard, new SubjectsFragment(student));
         transaction.commit();
     }
 
@@ -154,11 +216,11 @@ public class DashboardActivity extends AppCompatActivity {
     private void toDashboard(){
         homeActive = true;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(type=="student"){
-            transaction.replace(R.id.fragment_dashboard, new StudentDashboardFragment());
+        if(type.equals("student") && (student!=null)){
+            transaction.replace(R.id.fragment_dashboard, new StudentDashboardFragment(student));
         }
-        else{
-            transaction.replace(R.id.fragment_dashboard, new TeacherDashboardFragment());
+        else if(teacher!=null){
+            transaction.replace(R.id.fragment_dashboard, new TeacherDashboardFragment(teacher));
         }
         transaction.commit();
     }

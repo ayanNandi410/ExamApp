@@ -4,57 +4,45 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.Toast;
 
+import com.project.examapp.Adapters.SubjectsAdapter;
+import com.project.examapp.Adapters.TeachersAdapter;
+import com.project.examapp.Api.RetrofitClient;
+import com.project.examapp.Api.StudentDashboardApi;
 import com.project.examapp.R;
+import com.project.examapp.models.Student;
+import com.project.examapp.models.Subject;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SubjectsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class SubjectsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    RetrofitClient client;
+    StudentDashboardApi studentDashboardApi;
+    Student student;
+    ArrayList<Subject> subjectList;
+    SubjectsAdapter adapter;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public SubjectsFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SubjectsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SubjectsFragment newInstance(String param1, String param2) {
-        SubjectsFragment fragment = new SubjectsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public SubjectsFragment(Student student) {
+       this.student = student;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        //Retrofit call
+        client = RetrofitClient.getInstance();
+        studentDashboardApi = client.getRetrofit().create(StudentDashboardApi.class);
     }
 
     @Override
@@ -62,5 +50,32 @@ public class SubjectsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_subjects, container, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Call<ArrayList<Subject>> callExamList = studentDashboardApi.getSubjectsList(student.getDept());
+        callExamList.enqueue(new Callback<ArrayList<Subject>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Subject>> call, Response<ArrayList<Subject>> response) {
+                if(response.isSuccessful()) {
+                    Toast.makeText(getContext(), "Teachers List fetched", Toast.LENGTH_SHORT).show();
+                    subjectList = response.body();
+
+                    // Create the adapter to convert the array to views
+                    adapter = new SubjectsAdapter(getContext(), subjectList);
+
+                    // Attach the adapter to a ListView
+                    ListView listView = (ListView) getView().findViewById(R.id.subsListView);
+                    listView.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Subject>> call, Throwable t) {
+                Log.e("Fetch Teacher List","FAILURE");
+            }
+        });
     }
 }

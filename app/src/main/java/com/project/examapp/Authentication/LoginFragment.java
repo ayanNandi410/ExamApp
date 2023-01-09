@@ -13,19 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
-import com.project.examapp.Api.RegisterApi;
-import com.project.examapp.Api.RetrofitClient;
-import com.project.examapp.Api.StudentDashboardApi;
 import com.project.examapp.R;
 
 public class LoginFragment extends Fragment {
 
     EditText text_email, text_psd;
     Button btnClick, btnToRegister;
-    String type = "student";
 
     public LoginFragment() {
     }
@@ -57,7 +51,7 @@ public class LoginFragment extends Fragment {
             public void onClick(View v)
             {
                 if(CheckAllFields()){
-                    ((MainActivity) getActivity()).signIn(text_email.getText().toString(),text_psd.getText().toString(),type);
+                    ((MainActivity) getActivity()).signIn(text_email.getText().toString(),text_psd.getText().toString());
                     Log.d(TAG, "Account added");
                 }
             }

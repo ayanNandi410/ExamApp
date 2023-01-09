@@ -1,6 +1,7 @@
 package com.project.examapp.models;
 
 public class Student {
+    private String id;
     private String name;
     private String email;
     private String dept;
@@ -28,5 +29,13 @@ public class Student {
 
     public void setDept(String dept) {
         this.dept = dept;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

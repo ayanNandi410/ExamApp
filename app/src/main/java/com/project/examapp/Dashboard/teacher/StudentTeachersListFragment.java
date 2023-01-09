@@ -15,6 +15,7 @@ import com.project.examapp.Adapters.TeachersAdapter;
 import com.project.examapp.Api.StudentDashboardApi;
 import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.R;
+import com.project.examapp.models.Student;
 import com.project.examapp.models.Teacher;
 
 import java.util.ArrayList;
@@ -29,9 +30,10 @@ public class StudentTeachersListFragment extends Fragment {
     TeachersAdapter adapter;
     RetrofitClient client;
     StudentDashboardApi studentDashboardApi;
+    Student student;
 
-    public StudentTeachersListFragment() {
-        // Required empty public constructor
+   public StudentTeachersListFragment(Student student) {
+        this.student = student;
     }
 
     @Override
@@ -53,7 +55,7 @@ public class StudentTeachersListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Call<ArrayList<Teacher>> callExamList = studentDashboardApi.getTeachersList();
+        Call<ArrayList<Teacher>> callExamList = studentDashboardApi.getTeachersList(student.getDept());
         callExamList.enqueue(new Callback<ArrayList<Teacher>>() {
             @Override
             public void onResponse(Call<ArrayList<Teacher>> call, Response<ArrayList<Teacher>> response) {

@@ -22,6 +22,7 @@ import com.project.examapp.Dashboard.DashboardActivity;
 import com.project.examapp.ExamPageActivity;
 import com.project.examapp.R;
 import com.project.examapp.models.Exam;
+import com.project.examapp.models.Student;
 
 import java.util.ArrayList;
 
@@ -36,9 +37,10 @@ public class StudentExamListFragment extends Fragment {
     RetrofitClient client;
     StudentDashboardApi studentDashboardApi;
     ListView listView;
+    Student student;
 
-    public StudentExamListFragment() {
-        // Required empty public constructor
+    public StudentExamListFragment(Student student) {
+        this.student = student;
     }
 
     @Override
@@ -60,8 +62,12 @@ public class StudentExamListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        getExams();
+    }
+
+    private void getExams(){
         listView = (ListView) getView().findViewById(R.id.stdExamListView);
-        Call<ArrayList<Exam>> callExamList = studentDashboardApi.getExamList();
+        Call<ArrayList<Exam>> callExamList = studentDashboardApi.getExamList(student.getDept());
         callExamList.enqueue(new Callback<ArrayList<Exam>>() {
             @Override
             public void onResponse(Call<ArrayList<Exam>> call, Response<ArrayList<Exam>> response) {

@@ -98,7 +98,7 @@ public class ExamPageActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         examName.setText(exam_id);
-
+        showProgressBar();
         Call<ArrayList<Question>> callQuestionList = questionApi.getQuestions(exam_id);
         callQuestionList.enqueue(new Callback<java.util.ArrayList<Question>>() {
             @Override
@@ -145,6 +145,13 @@ public class ExamPageActivity extends AppCompatActivity {
                 Log.e("Fetch Question list", t.toString());
             }
         });
+    }
+
+    private void showProgressBar(){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.questionSet, new ProgressBarFragment());
+        transaction.commit();
     }
 
     private void startTimer(Integer time){

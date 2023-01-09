@@ -15,15 +15,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.project.examapp.R;
 import com.project.examapp.Dashboard.DashboardActivity;
+import com.project.examapp.models.Teacher;
 
 
 public class TeacherDashboardFragment extends Fragment {
 
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
+    Teacher teacherUser;
 
-    public TeacherDashboardFragment() {
+    public TeacherDashboardFragment(Teacher teacher) {
         mAuth = FirebaseAuth.getInstance();
+        teacherUser = teacher;
     }
 
     @Override
@@ -53,7 +56,7 @@ public class TeacherDashboardFragment extends Fragment {
 
         tchName.setText(currentUser.getDisplayName());
         tchEmail.setText(currentUser.getEmail());
-        tchId.setText("Teacher");
+        tchId.setText(teacherUser.getId());
 
         examsCrd.setOnClickListener( new View.OnClickListener() {
             @Override

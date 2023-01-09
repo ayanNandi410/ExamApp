@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.project.examapp.Dashboard.DashboardActivity;
@@ -24,7 +25,6 @@ import com.project.examapp.R;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private static String userType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-            dashboard(userType);
+            dashboard();
             //updateUI(currentUser);
         }
         else{
@@ -76,15 +76,18 @@ public class MainActivity extends AppCompatActivity {
                                             }
                                             else
                                             {
+                                                if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                                    Toast.makeText(MainActivity.this, "User with this email already exist.", Toast.LENGTH_SHORT).show();
+                                                }
                                                 Log.w(TAG, "createUserWithEmail:failure while assigning profile", task.getException());
                                                 delete_user(user);
                                                 sign_up();
-                                                Toast.makeText(MainActivity.this, "Profile save failed.",
+                                                Toast.makeText(MainActivity.this, "Registration failed",
                                                         Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
-
+                            mAuth.signOut();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -97,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         // [END create_user_with_email]
     }
 
-    public void signIn(String email, String password, String type) {
+    public void signIn(String email, String password) {
         // [START sign_in_with_email]
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -107,8 +110,7 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            userType = type;
-                            dashboard(userType);
+                            dashboard();
                             //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -150,9 +152,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void dashboard(String type){
+    private void dashboard(){
         Intent dbdIntent = new Intent(this, DashboardActivity.class);
-        dbdIntent.putExtra("type", type);
         this.finish();
         startActivity(dbdIntent);
     }
