@@ -3,9 +3,12 @@ package com.project.examapp.Dashboard;
 import static android.content.ContentValues.TAG;
 import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -20,6 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.Api.UserApi;
 import com.project.examapp.Authentication.MainActivity;
+import com.project.examapp.ExamPageActivity;
 import com.project.examapp.ProgressBarFragment;
 import com.project.examapp.R;
 import com.project.examapp.Dashboard.student.StudentDashboardFragment;
@@ -38,33 +42,45 @@ public class DashboardActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
-    private String type;
+    private String type = "null";
     private boolean homeActive = true;
     private Student student;
     private Teacher teacher;
     private UserApi userApi;
     private RetrofitClient client;
+    private ProgressDialog dialog;
+    Handler handler;
+    Runnable FetchDetailsTask = new Runnable() {
+        @Override
+        public void run() {
+            getUserDetails();
+            handler.postAtTime(this,SystemClock.uptimeMillis()+8000 );
+            }
+        };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        handler = new Handler();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         client = RetrofitClient.getInstance();
         userApi = client.getRetrofit().create(UserApi.class);
         student = null;
         teacher = null;
-        type = null;
-        getUserDetails();
     }
 
     @Override
-    protected void onStart() {
+    protected void onResume() {
 
-        super.onStart();
-        showProgressBar();
+        super.onResume();
+        dialog = ProgressDialog.show(DashboardActivity.this, "",
+                "Loading.. Please wait...", true);
+        dialog.show();
+        startGettingDetails();
+
 
         ImageButton signOut = findViewById(R.id.logOutB);
         ImageButton backButton = findViewById(R.id.backB);
@@ -92,10 +108,16 @@ public class DashboardActivity extends AppCompatActivity {
                 }
                 else
                 {
-                   toDashboard();
+                   toDashboard(type);
                 }
             }
         });
+    }
+
+    private void startGettingDetails()
+    {
+        handler.removeCallbacks(FetchDetailsTask);
+        handler.postDelayed(FetchDetailsTask, 100);
     }
 
     private void getUserDetails()
@@ -106,9 +128,12 @@ public class DashboardActivity extends AppCompatActivity {
                 public void onResponse(Call<Student> call, Response<Student> response) {
                     if(response.isSuccessful()) {
                         student = response.body();
-                        type = "student";
-                        Log.i("User Type","student");
-                        toDashboard();
+                        if(student.getEmail() != "notFound")
+                        {
+                            type = "student";
+                            Log.i("User Type","student");
+                            toDashboard("student");
+                        }
                     }
                 }
 
@@ -124,9 +149,12 @@ public class DashboardActivity extends AppCompatActivity {
                 public void onResponse(Call<Teacher> call, Response<Teacher> response) {
                     if(response.isSuccessful()) {
                         teacher = response.body();
-                        type = "teacher";
-                        Log.i("User Type","teacher");
-                        toDashboard();
+                        if(teacher.getEmail() != "notFound")
+                        {
+                            type = "teacher";
+                            Log.i("User Type","teacher");
+                            toDashboard("teacher");
+                        }
                     }
                 }
 
@@ -213,14 +241,20 @@ public class DashboardActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    private void toDashboard(){
+    private void toDashboard(String t){
+        handler.removeCallbacks(FetchDetailsTask);
         homeActive = true;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(type.equals("student") && (student!=null)){
+        if(t.equals("student") && (student!=null)){
+            dialog.dismiss();
             transaction.replace(R.id.fragment_dashboard, new StudentDashboardFragment(student));
         }
-        else if(teacher!=null){
+        else if(t.equals("teacher") && (teacher!=null)){
+            dialog.dismiss();
             transaction.replace(R.id.fragment_dashboard, new TeacherDashboardFragment(teacher));
+        }
+        else{
+            return;
         }
         transaction.commit();
     }

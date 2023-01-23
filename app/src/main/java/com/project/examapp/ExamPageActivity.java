@@ -33,42 +33,16 @@ public class ExamPageActivity extends AppCompatActivity {
 
     RetrofitClient client;
     String exam_id;
-    Integer time, hr, min, sec;
-    long endTime;
     GetQuestionApi questionApi;
     ResultApi resultApi;
-    List<Question> qsList;
+    ArrayList<Question> qsList;
     List<Result> results;
     TextView examName, examTime;
     ArrayList<Answer> answers;
-
-    Handler handler;
     FirebaseAuth mAuth;
+    Integer time;
 
-    Runnable UpdateTimeTask = new Runnable() {
-        @Override
-        public void run() {
-            final long end = endTime;
-            long millis = end - SystemClock.uptimeMillis();
 
-            if(millis<0)
-            {
-                stopTimer();
-            }
-            else{
-                int seconds = (int) (millis / 1000);
-                int minutes = seconds / 60;
-                seconds     = seconds % 60;
-
-                if (seconds < 10) {
-                    examTime.setText("" + minutes + ":0" + seconds);
-                } else {
-                    examTime.setText("" + minutes + ":" + seconds);
-                }
-                handler.postAtTime(this,SystemClock.uptimeMillis()+1000 );
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,14 +51,13 @@ public class ExamPageActivity extends AppCompatActivity {
         client = RetrofitClient.getInstance();
         questionApi = client.getRetrofit().create(GetQuestionApi.class);
         resultApi = client.getRetrofit().create(ResultApi.class);
-        handler = new Handler();
         // get exam id
         Intent intent = getIntent();
         exam_id = intent.getStringExtra("exam_id");
         time = intent.getIntExtra("time", 100);
 
         //startTime = time*60*1000;
-        startTimer(time);
+        //startTimer(time);
 
         client = RetrofitClient.getInstance();
         questionApi = client.getRetrofit().create(GetQuestionApi.class);
@@ -106,26 +79,20 @@ public class ExamPageActivity extends AppCompatActivity {
                 if(response.isSuccessful()) {
                     Toast.makeText(ExamPageActivity.this, "Question List fetched", Toast.LENGTH_SHORT).show();
                     qsList = response.body();
+                    Log.e("QS List", String.valueOf(qsList.size()));
                     FirebaseUser user = mAuth.getCurrentUser();
 
-                    answers = new ArrayList<Answer>();
-                    for(int i = 0;i < qsList.size();i++){
-                        Question q = qsList.get(i);
-                        Answer a = new Answer(exam_id, q.getId(), user.getUid());
-                        answers.add(a);
-                    }
                     showQuestionFragment();
+
                 }
             }
 
             @Override
             public void onFailure(Call<ArrayList<Question>> call, Throwable t) {
                 Log.e("Fetch Question List","FAILURE");
-                Log.e("Fetch Question list", t.toString());
             }
         });
-
-        Call<ArrayList<Result>> callResultList = resultApi.getResults(exam_id);
+        /*Call<ArrayList<Result>> callResultList = resultApi.getResults(exam_id);
         callResultList.enqueue(new Callback<ArrayList<Result>>() {
             @Override
             public void onResponse(Call<ArrayList<Result>> call, Response<ArrayList<Result>> response) {
@@ -134,7 +101,7 @@ public class ExamPageActivity extends AppCompatActivity {
                     results = response.body();
                     FirebaseUser user = mAuth.getCurrentUser();
 
-                    answers = new ArrayList<Answer>();
+                    //answers = new ArrayList<Answer>();
                     showQuestionFragment();
                 }
             }
@@ -145,6 +112,8 @@ public class ExamPageActivity extends AppCompatActivity {
                 Log.e("Fetch Question list", t.toString());
             }
         });
+
+         */
     }
 
     private void showProgressBar(){
@@ -154,16 +123,9 @@ public class ExamPageActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    private void startTimer(Integer time){
-        long interval = (Integer)(time * 60 * 1000);
-        endTime = SystemClock.uptimeMillis()+interval;
-        handler.removeCallbacks(UpdateTimeTask);
-        handler.postDelayed(UpdateTimeTask, 100);
-    }
-
-    private void stopTimer()
+    public void setExamTime(String t)
     {
-        handler.removeCallbacks(UpdateTimeTask);
+        examTime.setText(t);
     }
 
 
@@ -171,7 +133,11 @@ public class ExamPageActivity extends AppCompatActivity {
     {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.questionSet, new ExamQuestionFragment(qsList, answers));
+        ExamQuestionFragment qsFragment = new ExamQuestionFragment(qsList,time);
+        Bundle bundle = new Bundle();
+        bundle.putString("message", exam_id );
+        qsFragment.setArguments(bundle);
+        transaction.replace(R.id.questionSet, qsFragment);
         transaction.commit();
     }
 }

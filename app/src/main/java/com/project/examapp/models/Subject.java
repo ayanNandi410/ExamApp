@@ -5,6 +5,7 @@ public class Subject {
     private String dept;
     private String name;
     private String subject_id;
+    private String teacher_id;
 
 
     public String getDept() {
@@ -29,5 +30,13 @@ public class Subject {
 
     public void setSubject_id(String subject_id) {
         this.subject_id = subject_id;
+    }
+
+    public String getTeacher_id() {
+        return teacher_id;
+    }
+
+    public void setTeacher_id(String teacher_id) {
+        this.teacher_id = teacher_id;
     }
 }

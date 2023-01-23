@@ -1,5 +1,6 @@
 package com.project.examapp;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +19,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.project.examapp.Api.AnswerApi;
+import com.project.examapp.Api.GetQuestionApi;
 import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.Dashboard.DashboardActivity;
 import com.project.examapp.models.Answer;
@@ -33,17 +39,59 @@ import retrofit2.Response;
 public class ExamQuestionFragment extends Fragment {
 
     RetrofitClient client;
+    FirebaseAuth mAuth;
     AnswerApi answerApi;
-    List<Question> qsArray;
+    GetQuestionApi questionApi;
+    ArrayList<Question> qsArray;
     ArrayList<Answer> answers;
-    TextView question, marks;
+    TextView question, marks, examTime;
     List<Button> selectedList;
     Button a, b, c, d, prev, next, submit;
     int pos;
+    String exam_id;
+    Integer time, hr, min, sec;
+    long endTime;
+    Handler handler;
 
-    public ExamQuestionFragment(List<Question> qsArray, ArrayList<Answer> answers) {
-       this.qsArray = qsArray;
-       this.answers = answers;
+    Runnable UpdateTimeTask = new Runnable() {
+        @Override
+        public void run() {
+            final long end = endTime;
+            long millis = end - SystemClock.uptimeMillis();
+
+            if(millis<0)
+            {
+                stopTimer();
+            }
+            else{
+                int seconds = (int) (millis / 1000);
+                int minutes = seconds / 60;
+                seconds     = seconds % 60;
+
+                if (seconds < 10) {
+                    ((ExamPageActivity) getActivity()).setExamTime("" + minutes + ":0" + seconds);
+                } else {
+                    ((ExamPageActivity) getActivity()).setExamTime("" + minutes + ":" + seconds);
+                }
+                handler.postAtTime(this,SystemClock.uptimeMillis()+1000 );
+            }
+        }
+    };
+
+    public ExamQuestionFragment(ArrayList<Question> qsArray,Integer time) {
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        handler = new Handler();
+
+        this.time = time;
+        this.qsArray = qsArray;
+        this.answers = new ArrayList<Answer>();
+        for(int i = 0;i < qsArray.size();i++){
+            Question q = qsArray.get(i);
+            Answer a = new Answer(exam_id, q.getId(), user.getUid());
+            answers.add(a);
+        }
        selectedList  = new ArrayList<Button>();
     }
 
@@ -52,6 +100,8 @@ public class ExamQuestionFragment extends Fragment {
         super.onCreate(savedInstanceState);
         client = RetrofitClient.getInstance();
         answerApi = client.getRetrofit().create(AnswerApi.class);
+        questionApi = client.getRetrofit().create(GetQuestionApi.class);
+        exam_id = this.getArguments().getString("exam_id");
     }
 
     @Override
@@ -74,8 +124,9 @@ public class ExamQuestionFragment extends Fragment {
         prev =  view.findViewById(R.id.prevQuestion);
         next =  view.findViewById(R.id.nextQuestion);
         submit = view.findViewById(R.id.submit);
-
         submit.setVisibility(View.INVISIBLE);
+
+        startTimer(time);
 
         setupSelected();
         startExam();
@@ -131,6 +182,19 @@ public class ExamQuestionFragment extends Fragment {
         });
 
 
+    }
+
+    private void startTimer(Integer time){
+        long interval = (Integer)(time * 60 * 1000);
+        endTime = SystemClock.uptimeMillis()+interval;
+        handler.removeCallbacks(UpdateTimeTask);
+        handler.postDelayed(UpdateTimeTask, 100);
+    }
+
+    private void stopTimer()
+    {
+        handler.removeCallbacks(UpdateTimeTask);
+        submitAnswers();
     }
 
     private void setupSelected(){
@@ -242,6 +306,9 @@ public class ExamQuestionFragment extends Fragment {
 
     private void submitAnswers(){
         Log.d("Submit answer", answers.toString());
+        ProgressDialog dialog = ProgressDialog.show(getContext(), "",
+                "Submitting answers.. Please wait...", true);
+        dialog.show();
         Call<ResponseBody> callAnswerPost = answerApi.postAnswers(answers);
         callAnswerPost.enqueue(new Callback<okhttp3.ResponseBody>() {
             @Override
@@ -249,17 +316,21 @@ public class ExamQuestionFragment extends Fragment {
                 if(response.isSuccessful()) {
                     Log.e("Submit answers","SUCCESS");
                     Toast.makeText(getContext(), "Answers submitted", Toast.LENGTH_LONG).show();
+                    Intent endExamintent = new Intent(getContext(), DashboardActivity.class);
+                    dialog.dismiss();
+                    getActivity().finish();
+                    startActivity(endExamintent);
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e("Submit answers","FAILURE");
+                dialog.dismiss();
+                Toast.makeText(getContext(), "Failed to submit answers", Toast.LENGTH_LONG).show();
             }
         });
-        Intent endExamintent = new Intent(getContext(), DashboardActivity.class);
-        getActivity().finish();
-        startActivity(endExamintent);
+
     }
 
     private int countNull(){

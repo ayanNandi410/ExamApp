@@ -4,8 +4,10 @@ public class Exam {
     private String exam_id;
     private String name;
     private Integer time;
+    private String date;
     private String description;
     private String subject_id;
+    private String dept;
 
     public Exam(String name,String description, String subject_id)
     {
@@ -57,5 +59,13 @@ public class Exam {
 
     public void setTime(Integer time) {
         this.time = time;
+    }
+
+    public String getDept() {
+        return dept;
+    }
+
+    public void setDept(String dept) {
+        this.dept = dept;
     }
 }
