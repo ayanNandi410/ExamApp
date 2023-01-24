@@ -2,6 +2,7 @@ package com.project.examapp.Api;
 
 import com.project.examapp.models.Student;
 import com.project.examapp.models.Teacher;
+import com.project.examapp.models.User;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -14,4 +15,7 @@ public interface UserApi {
 
     @GET("teacherByEmail/{email}")
     Call<Teacher> getTeacherByEmail(@Path("email") String email);
+
+    @GET("getUser/{email}")
+    Call<User> getUser(@Path("email") String email);
 }

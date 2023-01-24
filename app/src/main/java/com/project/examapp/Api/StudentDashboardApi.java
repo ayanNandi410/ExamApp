@@ -3,6 +3,7 @@ package com.project.examapp.Api;
 import com.project.examapp.models.Exam;
 import com.project.examapp.models.Subject;
 import com.project.examapp.models.Teacher;
+import com.project.examapp.models.User;
 
 import java.util.ArrayList;
 
@@ -20,4 +21,5 @@ public interface StudentDashboardApi {
 
     @GET("/subjects/{dept}")
     Call<ArrayList<Subject>> getSubjectsList(@Path("dept") String dept);
+
 }

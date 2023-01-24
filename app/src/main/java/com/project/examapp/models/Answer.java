@@ -2,6 +2,7 @@ package com.project.examapp.models;
 
 public class Answer {
     private String mcq;
+    private String answer;
     private String exam_id;
     private String question_id;
     private String student_id;
@@ -11,6 +12,7 @@ public class Answer {
         this.question_id = question_id;
         this.student_id = student_id;
         this.mcq = "";
+        this.answer = "";
     }
 
     public String getMcq() {

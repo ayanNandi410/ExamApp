@@ -105,6 +105,7 @@ public class StudentExamListFragment extends Fragment {
         Integer time = adapter.getItem(i).getTime();
         Intent takeExamIntent = new Intent(getActivity(), ExamPageActivity.class);
         takeExamIntent.putExtra("exam_id",exam_id);
+        takeExamIntent.putExtra("student_id",student.getId());
         takeExamIntent.putExtra("time",time);
         startActivity(takeExamIntent);
         getActivity().finish();

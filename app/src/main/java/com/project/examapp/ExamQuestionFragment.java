@@ -1,5 +1,7 @@
 package com.project.examapp;
 
+import static androidx.fragment.app.FragmentManager.TAG;
+
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,7 +50,7 @@ public class ExamQuestionFragment extends Fragment {
     List<Button> selectedList;
     Button a, b, c, d, prev, next, submit;
     int pos;
-    String exam_id;
+    String exam_id, student_id;
     Integer time, hr, min, sec;
     long endTime;
     Handler handler;
@@ -78,20 +80,16 @@ public class ExamQuestionFragment extends Fragment {
         }
     };
 
-    public ExamQuestionFragment(ArrayList<Question> qsArray,Integer time) {
+    public ExamQuestionFragment(ArrayList<Question> qsArray,Integer time, String student_id) {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
 
         handler = new Handler();
 
+        this.student_id = student_id;
         this.time = time;
         this.qsArray = qsArray;
         this.answers = new ArrayList<Answer>();
-        for(int i = 0;i < qsArray.size();i++){
-            Question q = qsArray.get(i);
-            Answer a = new Answer(exam_id, q.getId(), user.getUid());
-            answers.add(a);
-        }
        selectedList  = new ArrayList<Button>();
     }
 
@@ -102,6 +100,12 @@ public class ExamQuestionFragment extends Fragment {
         answerApi = client.getRetrofit().create(AnswerApi.class);
         questionApi = client.getRetrofit().create(GetQuestionApi.class);
         exam_id = this.getArguments().getString("exam_id");
+        for(int i = 0;i < qsArray.size();i++){
+            Question q = qsArray.get(i);
+            Answer a = new Answer(exam_id, q.getId(), student_id);
+            Log.d("Answer value",a.getExamId());
+            answers.add(a);
+        }
     }
 
     @Override
@@ -193,7 +197,6 @@ public class ExamQuestionFragment extends Fragment {
 
     private void stopTimer()
     {
-        handler.removeCallbacks(UpdateTimeTask);
         submitAnswers();
     }
 
@@ -306,6 +309,7 @@ public class ExamQuestionFragment extends Fragment {
 
     private void submitAnswers(){
         Log.d("Submit answer", answers.toString());
+        handler.removeCallbacks(UpdateTimeTask);
         ProgressDialog dialog = ProgressDialog.show(getContext(), "",
                 "Submitting answers.. Please wait...", true);
         dialog.show();
@@ -326,6 +330,7 @@ public class ExamQuestionFragment extends Fragment {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e("Submit answers","FAILURE");
+                Log.e("Submit answers",t.toString());
                 dialog.dismiss();
                 Toast.makeText(getContext(), "Failed to submit answers", Toast.LENGTH_LONG).show();
             }

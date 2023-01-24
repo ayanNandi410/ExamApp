@@ -32,7 +32,7 @@ import retrofit2.Response;
 public class ExamPageActivity extends AppCompatActivity {
 
     RetrofitClient client;
-    String exam_id;
+    String exam_id, student_id;
     GetQuestionApi questionApi;
     ResultApi resultApi;
     ArrayList<Question> qsList;
@@ -55,6 +55,7 @@ public class ExamPageActivity extends AppCompatActivity {
         Intent intent = getIntent();
         exam_id = intent.getStringExtra("exam_id");
         time = intent.getIntExtra("time", 100);
+        student_id = intent.getStringExtra("student_id");
 
         //startTime = time*60*1000;
         //startTimer(time);
@@ -133,9 +134,9 @@ public class ExamPageActivity extends AppCompatActivity {
     {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        ExamQuestionFragment qsFragment = new ExamQuestionFragment(qsList,time);
+        ExamQuestionFragment qsFragment = new ExamQuestionFragment(qsList,time,student_id);
         Bundle bundle = new Bundle();
-        bundle.putString("message", exam_id );
+        bundle.putString("exam_id", exam_id );
         qsFragment.setArguments(bundle);
         transaction.replace(R.id.questionSet, qsFragment);
         transaction.commit();
