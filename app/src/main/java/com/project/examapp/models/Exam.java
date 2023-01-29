@@ -8,6 +8,7 @@ public class Exam {
     private String description;
     private String subject_id;
     private String dept;
+    private boolean attempted;
 
     public Exam(String name,String description, String subject_id)
     {
@@ -67,5 +68,21 @@ public class Exam {
 
     public void setDept(String dept) {
         this.dept = dept;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public boolean isAttempted() {
+        return attempted;
+    }
+
+    public void setAttempted(boolean attempted) {
+        this.attempted = attempted;
     }
 }

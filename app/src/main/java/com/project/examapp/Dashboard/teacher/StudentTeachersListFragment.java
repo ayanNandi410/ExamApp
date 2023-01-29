@@ -14,11 +14,13 @@ import android.widget.Toast;
 import com.project.examapp.Adapters.TeachersAdapter;
 import com.project.examapp.Api.StudentDashboardApi;
 import com.project.examapp.Api.RetrofitClient;
+import com.project.examapp.Dashboard.DashboardActivity;
 import com.project.examapp.R;
 import com.project.examapp.models.Student;
 import com.project.examapp.models.Teacher;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,6 +57,7 @@ public class StudentTeachersListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        ((DashboardActivity) requireActivity()).setTitle("Teacher List");
         Call<ArrayList<Teacher>> callExamList = studentDashboardApi.getTeachersList(student.getDept());
         callExamList.enqueue(new Callback<ArrayList<Teacher>>() {
             @Override

@@ -129,6 +129,7 @@ public class ExamQuestionFragment extends Fragment {
         next =  view.findViewById(R.id.nextQuestion);
         submit = view.findViewById(R.id.submit);
         submit.setVisibility(View.INVISIBLE);
+        prev.setVisibility(View.INVISIBLE);
 
         startTimer(time);
 
@@ -285,7 +286,7 @@ public class ExamQuestionFragment extends Fragment {
 
     private void prevQuestion(){
         pos = pos - 1;
-        if(pos==0)
+        if(pos<=0)
         {
             prev.setVisibility(View.INVISIBLE);
         }

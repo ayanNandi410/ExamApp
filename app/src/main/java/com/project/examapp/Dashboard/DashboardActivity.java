@@ -11,6 +11,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.Api.UserApi;
 import com.project.examapp.Authentication.MainActivity;
+import com.project.examapp.Dashboard.student.StudentProfileFragment;
 import com.project.examapp.ProgressBarFragment;
 import com.project.examapp.R;
 import com.project.examapp.Dashboard.student.StudentDashboardFragment;
@@ -49,6 +51,7 @@ public class DashboardActivity extends AppCompatActivity {
     private UserApi userApi;
     private RetrofitClient client;
     private ProgressDialog dialog;
+    private TextView title;
     Handler handler;
     Runnable FetchDetailsTask = new Runnable() {
         @Override
@@ -89,7 +92,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         ImageButton signOut = findViewById(R.id.logOutB);
         ImageButton backButton = findViewById(R.id.backB);
-
+        title = findViewById(R.id.textView);
         signOut.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -158,6 +161,10 @@ public class DashboardActivity extends AppCompatActivity {
         });
     }
 
+    public void setTitle(String titleText){
+        title.setText(titleText);
+    }
+
     private void BackPress() {
         // Create the object of AlertDialog Builder class
         AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
@@ -220,21 +227,18 @@ public class DashboardActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    public void profileFrag(){
+    public void stProfileFrag(){
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        Bundle bundle = new Bundle();
-        bundle.putString("email", user.getEmail());
-        bundle.putString("name",user.getDisplayName());
-        ProfileFragment fragUser = new ProfileFragment();
-        fragUser.setArguments(bundle);
+        StudentProfileFragment fragUser = new StudentProfileFragment(student);
         transaction.replace(R.id.fragment_dashboard, fragUser);
         transaction.commit();
     }
 
     private void toDashboard(){
         handler.removeCallbacks(FetchDetailsTask);
+        title.setText("Dashboard");
         homeActive = true;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if(type.equals("student")){

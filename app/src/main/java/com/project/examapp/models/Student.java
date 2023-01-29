@@ -5,6 +5,13 @@ public class Student {
     private String name;
     private String email;
     private String dept;
+    private String year;
+    private String mobNo;
+    private String address;
+    private String gender;
+
+    public Student() {
+    }
 
     public String getName() {
         return name;
@@ -37,5 +44,33 @@ public class Student {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getMobNo() {
+        return mobNo;
+    }
+
+    public void setMobNo(String mobNo) {
+        this.mobNo = mobNo;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getGender() {
+        return gender;
     }
 }

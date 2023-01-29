@@ -1,5 +1,6 @@
 package com.project.examapp.Dashboard.student;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.Dashboard.DashboardActivity;
 import com.project.examapp.ExamPageActivity;
 import com.project.examapp.R;
+import com.project.examapp.models.Attempt;
 import com.project.examapp.models.Exam;
 import com.project.examapp.models.Student;
 
@@ -33,6 +35,8 @@ import retrofit2.Response;
 public class StudentExamListFragment extends Fragment {
 
     ArrayList<Exam> examList;
+    ProgressDialog dialog;
+    ArrayList<Attempt> attemptList;
     ExamsAdapter adapter;
     RetrofitClient client;
     StudentDashboardApi studentDashboardApi;
@@ -50,6 +54,7 @@ public class StudentExamListFragment extends Fragment {
         //Retrofit call
         client = RetrofitClient.getInstance();
         studentDashboardApi = client.getRetrofit().create(StudentDashboardApi.class);
+        ((DashboardActivity) getActivity()).setTitle("Exam List");
     }
 
     @Override
@@ -62,6 +67,9 @@ public class StudentExamListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        dialog = ProgressDialog.show(getContext(), "",
+                "Loading.. Please wait...", true);
+        dialog.show();
         getExams();
     }
 
@@ -72,26 +80,55 @@ public class StudentExamListFragment extends Fragment {
             @Override
             public void onResponse(Call<ArrayList<Exam>> call, Response<ArrayList<Exam>> response) {
                 if(response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Exam List fetched", Toast.LENGTH_SHORT).show();
+                    Log.i("Exam List Fetch", "Success");
                     examList = response.body();
+                    getAttemptList(student.getId());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Exam>> call, Throwable t) {
+                Log.e("Fetch Exam List","FAILURE");
+                Log.e("Fetch Exam list", t.toString());
+            }
+        });
+    }
+
+    private void getAttemptList(String sid)
+    {
+        listView = (ListView) getView().findViewById(R.id.stdExamListView);
+        Call<ArrayList<Attempt>> callAttemptList = studentDashboardApi.getAttemptList(sid);
+        callAttemptList.enqueue(new Callback<ArrayList<Attempt>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Attempt>> call, Response<ArrayList<Attempt>> response) {
+                if(response.isSuccessful()) {
+                    Log.i("Attempt List Fetch", "Success");
+                    attemptList = response.body();
 
                     // Create the adapter to convert the array to views
-                    adapter = new ExamsAdapter(getContext(), examList);
+                    adapter = new ExamsAdapter(getContext(), examList, attemptList);
 
                     // Attach the adapter to a ListView
                     listView.setAdapter(adapter);
-
+                    dialog.dismiss();
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            StartExamAlert(i);
+                            if(!examList.get(i).isAttempted())
+                            {
+                                StartExamAlert(i);
+                            }
+                            else
+                            {
+                                Toast.makeText(getContext(), "Exam not available", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                 }
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Exam>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<Attempt>> call, Throwable t) {
                 Log.e("Fetch Exam List","FAILURE");
                 Log.e("Fetch Exam list", t.toString());
             }
@@ -112,12 +149,16 @@ public class StudentExamListFragment extends Fragment {
     }
 
     private void StartExamAlert(int i) {
+
+        Exam exam = adapter.getItem(i);
         // Create the object of AlertDialog Builder class
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         // Set the message show for the Alert time
-        builder.setMessage("Do you wish to start ?");
-
+        String message = "\nExam Name : " + exam.getExamName() + "\nExam Time : " + getExamTime(exam.getTime()) +
+                "\nSubject ID : " + exam.getSubject_id() + "\nDescription : " + exam.getDescription() +
+                "\n\n\nDo you wish to start ?\n";
+        builder.setMessage(message);
         // Set Alert Title
         builder.setTitle("Start Exam");
 
@@ -140,5 +181,17 @@ public class StudentExamListFragment extends Fragment {
         AlertDialog alertDialog = builder.create();
         // Show the Alert Dialog box
         alertDialog.show();
+    }
+
+    private String getExamTime(Integer min)
+    {
+        Integer hours = min/60;
+        min = min % 60;
+        if(hours==0)
+            return String.valueOf(min) + " min";
+        else if(hours==1)
+            return "1 hour and " + String.valueOf(min) + " min";
+        else
+            return String.valueOf(hours) + " hours and " + String.valueOf(min) + " min";
     }
 }

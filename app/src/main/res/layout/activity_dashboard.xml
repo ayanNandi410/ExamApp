@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/gwhite"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Dashboard.DashboardActivity">
 
@@ -70,7 +71,8 @@
         android:layout_marginTop="70dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="15dp">
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/custom_rectangle_blank">
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

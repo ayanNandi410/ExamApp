@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.project.examapp.Dashboard.DashboardActivity;
-import com.project.examapp.Dashboard.ProfileFragment;
+import com.project.examapp.Dashboard.student.StudentProfileFragment;
 import com.project.examapp.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -136,20 +136,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         // [END send_email_verification]
-    }
-
-    private void updateUI(FirebaseUser user) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        Bundle bundle = new Bundle();
-        bundle.putString("email", user.getEmail());
-        bundle.putString("name",user.getDisplayName());
-        ProfileFragment fragUser = new ProfileFragment();
-        fragUser.setArguments(bundle);
-
-        transaction.replace(R.id.fragment_container_view, fragUser);
-        transaction.commit();
-
     }
 
     private void dashboard(){

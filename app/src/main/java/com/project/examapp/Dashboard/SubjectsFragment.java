@@ -50,11 +50,13 @@ public class SubjectsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_subjects, container, false);
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        ((DashboardActivity) getActivity()).setTitle("Exam List");
         Call<ArrayList<Subject>> callExamList = studentDashboardApi.getSubjectsList(student.getDept());
         callExamList.enqueue(new Callback<ArrayList<Subject>>() {
             @Override

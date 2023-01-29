@@ -68,7 +68,7 @@ public class StudentDashboardFragment extends Fragment {
         profileCrd.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((DashboardActivity)getActivity()).profileFrag();
+                ((DashboardActivity)getActivity()).stProfileFrag();
             }
         });
 
