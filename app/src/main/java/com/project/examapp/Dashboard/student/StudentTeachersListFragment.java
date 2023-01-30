@@ -1,4 +1,4 @@
-package com.project.examapp.Dashboard.teacher;
+package com.project.examapp.Dashboard.student;
 
 import android.os.Bundle;
 
@@ -20,7 +20,6 @@ import com.project.examapp.models.Student;
 import com.project.examapp.models.Teacher;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,7 +50,7 @@ public class StudentTeachersListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_student_teachers_list, container, false);
+        return inflater.inflate(R.layout.fragment_teachers_list, container, false);
     }
 
     @Override

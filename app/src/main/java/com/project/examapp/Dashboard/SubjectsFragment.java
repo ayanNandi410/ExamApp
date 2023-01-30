@@ -18,6 +18,7 @@ import com.project.examapp.Api.StudentDashboardApi;
 import com.project.examapp.R;
 import com.project.examapp.models.Student;
 import com.project.examapp.models.Subject;
+import com.project.examapp.models.Teacher;
 
 import java.util.ArrayList;
 
@@ -29,12 +30,15 @@ public class SubjectsFragment extends Fragment {
 
     RetrofitClient client;
     StudentDashboardApi studentDashboardApi;
-    Student student;
+    String dept;
     ArrayList<Subject> subjectList;
     SubjectsAdapter adapter;
 
-    public SubjectsFragment(Student student) {
-       this.student = student;
+    public SubjectsFragment(Student student, Teacher teacher) {
+       if(student == null)
+           dept = teacher.getDept();
+       else
+           dept = student.getDept();
     }
 
     @Override
@@ -56,13 +60,13 @@ public class SubjectsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((DashboardActivity) getActivity()).setTitle("Exam List");
-        Call<ArrayList<Subject>> callExamList = studentDashboardApi.getSubjectsList(student.getDept());
+        ((DashboardActivity) getActivity()).setTitle("Subject List");
+        Call<ArrayList<Subject>> callExamList = studentDashboardApi.getSubjectsList(dept);
         callExamList.enqueue(new Callback<ArrayList<Subject>>() {
             @Override
             public void onResponse(Call<ArrayList<Subject>> call, Response<ArrayList<Subject>> response) {
                 if(response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Teachers List fetched", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Subject List fetched", Toast.LENGTH_SHORT).show();
                     subjectList = response.body();
 
                     // Create the adapter to convert the array to views
@@ -76,7 +80,7 @@ public class SubjectsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ArrayList<Subject>> call, Throwable t) {
-                Log.e("Fetch Teacher List","FAILURE");
+                Log.e("Fetch Subject List","FAILURE");
             }
         });
     }

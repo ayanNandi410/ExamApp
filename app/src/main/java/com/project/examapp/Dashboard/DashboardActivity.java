@@ -23,12 +23,17 @@ import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.Api.UserApi;
 import com.project.examapp.Authentication.MainActivity;
 import com.project.examapp.Dashboard.student.StudentProfileFragment;
-import com.project.examapp.ProgressBarFragment;
+import com.project.examapp.Dashboard.teacher.ExamScoresFragment;
+import com.project.examapp.Dashboard.teacher.ScoresFragment;
+import com.project.examapp.Dashboard.teacher.StudentsListFragment;
+import com.project.examapp.Dashboard.teacher.TeacherProfileFragment;
+import com.project.examapp.common.EmptyFragment;
+import com.project.examapp.common.ProgressBarFragment;
 import com.project.examapp.R;
 import com.project.examapp.Dashboard.student.StudentDashboardFragment;
 import com.project.examapp.Dashboard.student.StudentExamListFragment;
-import com.project.examapp.Dashboard.teacher.StudentTeachersListFragment;
 import com.project.examapp.Dashboard.teacher.TeacherDashboardFragment;
+import com.project.examapp.models.Exam;
 import com.project.examapp.models.Student;
 import com.project.examapp.models.Teacher;
 import com.project.examapp.models.User;
@@ -215,7 +220,7 @@ public class DashboardActivity extends AppCompatActivity {
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.fragment_dashboard, new StudentTeachersListFragment(student));
+        transaction.replace(R.id.fragment_dashboard, new StudentsListFragment(teacher));
         transaction.commit();
     }
 
@@ -223,7 +228,7 @@ public class DashboardActivity extends AppCompatActivity {
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.fragment_dashboard, new SubjectsFragment(student));
+        transaction.replace(R.id.fragment_dashboard, new SubjectsFragment(student,teacher));
         transaction.commit();
     }
 
@@ -232,6 +237,15 @@ public class DashboardActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         StudentProfileFragment fragUser = new StudentProfileFragment(student);
+        transaction.replace(R.id.fragment_dashboard, fragUser);
+        transaction.commit();
+    }
+
+    public void trProfileFrag(){
+        homeActive = false;
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        TeacherProfileFragment fragUser = new TeacherProfileFragment(teacher);
         transaction.replace(R.id.fragment_dashboard, fragUser);
         transaction.commit();
     }
@@ -249,6 +263,36 @@ public class DashboardActivity extends AppCompatActivity {
             dialog.dismiss();
             transaction.replace(R.id.fragment_dashboard, new TeacherDashboardFragment(teacher));
         }
+        transaction.commit();
+    }
+
+    public void examScoresFrag()
+    {
+        homeActive = false;
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        ExamScoresFragment examScoresFragment = new ExamScoresFragment(teacher);
+        transaction.replace(R.id.fragment_dashboard, examScoresFragment);
+        transaction.commit();
+    }
+
+    public void toScoresFragment(Exam exam)
+    {
+        homeActive = false;
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        ScoresFragment scoresFragment = new ScoresFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("exam-id",exam.getExam_id());
+        scoresFragment.setArguments(bundle);
+        transaction.replace(R.id.fragment_dashboard, scoresFragment);
+        transaction.commit();
+    }
+
+    public void toEmptyFragment(String text)
+    {
+        homeActive = false;
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        EmptyFragment fragment = new EmptyFragment(text);
+        transaction.replace(R.id.fragment_dashboard, fragment);
         transaction.commit();
     }
 }

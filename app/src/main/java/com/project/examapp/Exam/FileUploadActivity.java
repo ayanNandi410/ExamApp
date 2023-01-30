@@ -1,4 +1,4 @@
-package com.project.examapp;
+package com.project.examapp.Exam;
 
 import static android.content.ContentValues.TAG;
 
@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.project.examapp.Api.FileUploadApi;
 import com.project.examapp.Api.RetrofitClient;
+import com.project.examapp.R;
 
 import java.io.File;
 import java.io.IOException;

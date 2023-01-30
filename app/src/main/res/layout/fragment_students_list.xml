@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Dashboard.teacher.StudentTeachersListFragment">
+    tools:context=".Dashboard.teacher.StudentsListFragment">
 
     <ListView
-        android:id="@+id/stdTsListView"
+        android:id="@+id/trListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/custom_rectangle_blank"

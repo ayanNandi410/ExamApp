@@ -1,8 +1,7 @@
-package com.project.examapp.Dashboard.student;
+package com.project.examapp.Dashboard.teacher;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -16,15 +15,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.project.examapp.Adapters.ExamsAdapter;
-import com.project.examapp.Api.StudentDashboardApi;
+import com.project.examapp.Adapters.ExamScoresAdapter;
 import com.project.examapp.Api.RetrofitClient;
+import com.project.examapp.Api.TeacherDashboardApi;
 import com.project.examapp.Dashboard.DashboardActivity;
-import com.project.examapp.Exam.ExamPageActivity;
 import com.project.examapp.R;
-import com.project.examapp.models.Attempt;
 import com.project.examapp.models.Exam;
-import com.project.examapp.models.Student;
+import com.project.examapp.models.Teacher;
 
 import java.util.ArrayList;
 
@@ -32,19 +29,18 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class StudentExamListFragment extends Fragment {
+public class ExamScoresFragment extends Fragment {
 
     ArrayList<Exam> examList;
     ProgressDialog dialog;
-    ArrayList<Attempt> attemptList;
-    ExamsAdapter adapter;
+    ExamScoresAdapter adapter;
     RetrofitClient client;
-    StudentDashboardApi studentDashboardApi;
+    TeacherDashboardApi teacherDashboardApi;
     ListView listView;
-    Student student;
+    Teacher teacher;
 
-    public StudentExamListFragment(Student student) {
-        this.student = student;
+    public ExamScoresFragment(Teacher teacher) {
+        this.teacher = teacher;
     }
 
     @Override
@@ -53,7 +49,7 @@ public class StudentExamListFragment extends Fragment {
 
         //Retrofit call
         client = RetrofitClient.getInstance();
-        studentDashboardApi = client.getRetrofit().create(StudentDashboardApi.class);
+        teacherDashboardApi = client.getRetrofit().create(TeacherDashboardApi.class);
         ((DashboardActivity) getActivity()).setTitle("Exam List");
     }
 
@@ -61,7 +57,7 @@ public class StudentExamListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_student_exam_list, container, false);
+        return inflater.inflate(R.layout.fragment_exam_scores, container, false);
     }
 
     @Override
@@ -72,17 +68,33 @@ public class StudentExamListFragment extends Fragment {
         dialog.show();
         getExams();
     }
-
     private void getExams(){
-        listView = (ListView) getView().findViewById(R.id.stdExamListView);
-        Call<ArrayList<Exam>> callExamList = studentDashboardApi.getExamList(student.getDept());
+        listView = (ListView) getView().findViewById(R.id.tchExamListView);
+        Call<ArrayList<Exam>> callExamList = teacherDashboardApi.getExamList(teacher.getDept());
         callExamList.enqueue(new Callback<ArrayList<Exam>>() {
             @Override
             public void onResponse(Call<ArrayList<Exam>> call, Response<ArrayList<Exam>> response) {
                 if(response.isSuccessful()) {
                     Log.i("Exam List Fetch", "Success");
                     examList = response.body();
-                    getAttemptList(student.getId());
+
+                    // Create the adapter to convert the array to views
+                    adapter = new ExamScoresAdapter(getContext(), examList);
+
+                    // Attach the adapter to a ListView
+                    listView.setAdapter(adapter);
+                    dialog.dismiss();
+
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            if (!examList.get(i).isAttempted()) {
+                                SeeScoreAlert(i);
+                            } else {
+                                Toast.makeText(getContext(), "Exam not available", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
 
@@ -94,73 +106,17 @@ public class StudentExamListFragment extends Fragment {
         });
     }
 
-    private void getAttemptList(String sid)
+    private void SeeScoreAlert(int i)
     {
-        listView = (ListView) getView().findViewById(R.id.stdExamListView);
-        Call<ArrayList<Attempt>> callAttemptList = studentDashboardApi.getAttemptList(sid);
-        callAttemptList.enqueue(new Callback<ArrayList<Attempt>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Attempt>> call, Response<ArrayList<Attempt>> response) {
-                if(response.isSuccessful()) {
-                    Log.i("Attempt List Fetch", "Success");
-                    attemptList = response.body();
-
-                    // Create the adapter to convert the array to views
-                    adapter = new ExamsAdapter(getContext(), examList, attemptList);
-
-                    // Attach the adapter to a ListView
-                    listView.setAdapter(adapter);
-                    dialog.dismiss();
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            if(!examList.get(i).isAttempted())
-                            {
-                                StartExamAlert(i);
-                            }
-                            else
-                            {
-                                Toast.makeText(getContext(), "Exam not available", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Attempt>> call, Throwable t) {
-                Log.e("Fetch Exam List","FAILURE");
-                Log.e("Fetch Exam list", t.toString());
-            }
-        });
-    }
-
-    public void toTakeExam(int i)
-    {
-
-        String exam_id = adapter.getItem(i).getExam_id();
-        Integer time = adapter.getItem(i).getTime();
-        Intent takeExamIntent = new Intent(getActivity(), ExamPageActivity.class);
-        takeExamIntent.putExtra("exam_id",exam_id);
-        takeExamIntent.putExtra("student_id",student.getId());
-        takeExamIntent.putExtra("time",time);
-        startActivity(takeExamIntent);
-        getActivity().finish();
-    }
-
-    private void StartExamAlert(int i) {
-
         Exam exam = adapter.getItem(i);
         // Create the object of AlertDialog Builder class
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         // Set the message show for the Alert time
-        String message = "\nExam Name : " + exam.getExamName() + "\nExam Time : " + getExamTime(exam.getTime()) +
-                "\nSubject ID : " + exam.getSubject_id() + "\nDescription : " + exam.getDescription() +
-                "\n\n\nDo you wish to start ?\n";
+        String message = "\nExam Name : " + exam.getExamName() + "\n\nDo you wish to see scores ?\n";
         builder.setMessage(message);
         // Set Alert Title
-        builder.setTitle("Start Exam");
+        builder.setTitle("Exam Scores");
 
         // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
         builder.setCancelable(false);
@@ -168,7 +124,7 @@ public class StudentExamListFragment extends Fragment {
         // Set the positive button with yes name Lambda OnClickListener method is use of DialogInterface interface.
         builder.setPositiveButton("Yes", (DialogInterface.OnClickListener) (dialog, which) -> {
             // When the user click yes button then app will close
-            toTakeExam(i);
+            ((DashboardActivity)getActivity()).toScoresFragment(exam);
         });
 
         // Set the Negative button with No name Lambda OnClickListener method is use of DialogInterface interface.
@@ -183,15 +139,4 @@ public class StudentExamListFragment extends Fragment {
         alertDialog.show();
     }
 
-    private String getExamTime(Integer min)
-    {
-        Integer hours = min/60;
-        min = min % 60;
-        if(hours==0)
-            return String.valueOf(min) + " min";
-        else if(hours==1)
-            return "1 hour and " + String.valueOf(min) + " min";
-        else
-            return String.valueOf(hours) + " hours and " + String.valueOf(min) + " min";
-    }
 }

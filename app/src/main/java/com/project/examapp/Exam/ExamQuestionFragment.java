@@ -1,6 +1,4 @@
-package com.project.examapp;
-
-import static androidx.fragment.app.FragmentManager.TAG;
+package com.project.examapp.Exam;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -27,6 +25,8 @@ import com.project.examapp.Api.AnswerApi;
 import com.project.examapp.Api.GetQuestionApi;
 import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.Dashboard.DashboardActivity;
+import com.project.examapp.Exam.ExamPageActivity;
+import com.project.examapp.R;
 import com.project.examapp.models.Answer;
 import com.project.examapp.models.Question;
 

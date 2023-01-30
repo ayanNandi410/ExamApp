@@ -1,15 +1,11 @@
-package com.project.examapp;
+package com.project.examapp.Exam;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +14,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.project.examapp.Api.GetQuestionApi;
 import com.project.examapp.Api.ResultApi;
 import com.project.examapp.Api.RetrofitClient;
+import com.project.examapp.common.ProgressBarFragment;
+import com.project.examapp.R;
 import com.project.examapp.models.Answer;
 import com.project.examapp.models.Question;
 import com.project.examapp.models.Result;

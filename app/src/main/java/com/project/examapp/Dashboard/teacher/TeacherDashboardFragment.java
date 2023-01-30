@@ -61,14 +61,14 @@ public class TeacherDashboardFragment extends Fragment {
         examsCrd.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((DashboardActivity)getActivity()).examListFrag();
+                ((DashboardActivity)getActivity()).examScoresFrag();
             }
         });
 
         profileCrd.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //((DashboardActivity)getActivity()).profileFrag();
+                ((DashboardActivity)getActivity()).trProfileFrag();
             }
         });
 

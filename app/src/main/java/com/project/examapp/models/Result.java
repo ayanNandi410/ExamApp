@@ -1,9 +1,11 @@
 package com.project.examapp.models;
 
 public class Result {
+    private String student_name;
     private String student_id;
     private String exam_id;
     private int marks;
+    private int total;
 
     public String getStudentId() {
         return student_id;
@@ -27,5 +29,21 @@ public class Result {
 
     public void setMarks(int marks) {
         this.marks = marks;
+    }
+
+    public String getStudent_name() {
+        return student_name;
+    }
+
+    public void setStudent_name(String student_name) {
+        this.student_name = student_name;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
     }
 }

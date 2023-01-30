@@ -5,7 +5,9 @@ public class Teacher {
     private String name;
     private String dept;
     private String id;
-
+    private String address;
+    private String mobNo;
+    private String gender;
 
     public String getEmail() {
         return email;
@@ -37,5 +39,29 @@ public class Teacher {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getMobNo() {
+        return mobNo;
+    }
+
+    public void setMobNo(String mobNo) {
+        this.mobNo = mobNo;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }
