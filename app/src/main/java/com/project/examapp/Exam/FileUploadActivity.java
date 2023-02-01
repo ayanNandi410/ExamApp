@@ -102,7 +102,7 @@ public class FileUploadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_upload);
         imgPath = findViewById(R.id.item_img);
-        image = findViewById(R.id.img);
+        //image = findViewById(R.id.img);
         btn_upload = findViewById(R.id.create_item);
 
         btn_upload.setOnClickListener(v -> {

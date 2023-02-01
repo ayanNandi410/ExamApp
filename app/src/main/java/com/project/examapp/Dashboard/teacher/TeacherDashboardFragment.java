@@ -75,7 +75,7 @@ public class TeacherDashboardFragment extends Fragment {
         studentsCrd.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((DashboardActivity)getActivity()).teachersListFrag();
+                ((DashboardActivity)getActivity()).studentsListFrag();
             }
         });
 

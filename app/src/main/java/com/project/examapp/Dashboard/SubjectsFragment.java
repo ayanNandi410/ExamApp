@@ -1,5 +1,6 @@
 package com.project.examapp.Dashboard;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -31,6 +32,7 @@ public class SubjectsFragment extends Fragment {
     RetrofitClient client;
     StudentDashboardApi studentDashboardApi;
     String dept;
+    ProgressDialog dialog;
     ArrayList<Subject> subjectList;
     SubjectsAdapter adapter;
 
@@ -60,6 +62,9 @@ public class SubjectsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        dialog = ProgressDialog.show(getContext(), "",
+                "Loading.. Please wait...", true);
+        dialog.show();
         ((DashboardActivity) getActivity()).setTitle("Subject List");
         Call<ArrayList<Subject>> callExamList = studentDashboardApi.getSubjectsList(dept);
         callExamList.enqueue(new Callback<ArrayList<Subject>>() {
@@ -74,6 +79,7 @@ public class SubjectsFragment extends Fragment {
 
                     // Attach the adapter to a ListView
                     ListView listView = (ListView) getView().findViewById(R.id.subsListView);
+                    dialog.dismiss();
                     listView.setAdapter(adapter);
                 }
             }
@@ -81,6 +87,8 @@ public class SubjectsFragment extends Fragment {
             @Override
             public void onFailure(Call<ArrayList<Subject>> call, Throwable t) {
                 Log.e("Fetch Subject List","FAILURE");
+                dialog.dismiss();
+                ((DashboardActivity)getActivity()).toEmptyFragment("Some error occurred");
             }
         });
     }

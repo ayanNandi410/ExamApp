@@ -5,8 +5,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -62,6 +64,20 @@ public class StudentExamListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_student_exam_list, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        final SwipeRefreshLayout pullToRefresh = view.findViewById(R.id.pullToRefreshExamsList);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getExams();
+                Toast.makeText(getContext(), "Exam List refreshed", Toast.LENGTH_SHORT).show();
+                pullToRefresh.setRefreshing(false);
+            }
+        });
     }
 
     @Override

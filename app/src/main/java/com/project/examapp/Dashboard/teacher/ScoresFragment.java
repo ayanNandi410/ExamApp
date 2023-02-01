@@ -101,7 +101,7 @@ public class ScoresFragment extends Fragment {
             public void onFailure(Call<ArrayList<Result>> call, Throwable t) {
                 Log.e("Fetch Exam List","FAILURE");
                 dialog.dismiss();
-                ((DashboardActivity)getActivity()).toEmptyFragment("`Some error occurred`");
+                ((DashboardActivity)getActivity()).toEmptyFragment("Some error occurred");
             }
         });
     }

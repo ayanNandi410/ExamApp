@@ -54,7 +54,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="75dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="10dp"
         android:elevation="12dp"
         app:cardCornerRadius="8dp"
         android:orientation="vertical"
@@ -68,7 +68,6 @@
                 android:id="@+id/questionSet"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
             </FrameLayout>
 
         </androidx.cardview.widget.CardView>

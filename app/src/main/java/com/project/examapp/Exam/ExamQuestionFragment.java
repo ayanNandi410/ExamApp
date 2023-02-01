@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,14 +47,15 @@ public class ExamQuestionFragment extends Fragment {
     GetQuestionApi questionApi;
     ArrayList<Question> qsArray;
     ArrayList<Answer> answers;
-    TextView question, marks, examTime;
+    TextView question, marks, examTime, progress;
     List<Button> selectedList;
     Button a, b, c, d, prev, next, submit;
     int pos;
     String exam_id, student_id;
-    Integer time, hr, min, sec;
+    Integer time, hr, min, sec, size;
     long endTime;
     Handler handler;
+    ProgressBar progressBar;
 
     Runnable UpdateTimeTask = new Runnable() {
         @Override
@@ -89,6 +91,7 @@ public class ExamQuestionFragment extends Fragment {
         this.student_id = student_id;
         this.time = time;
         this.qsArray = qsArray;
+        this.size = qsArray.size();
         this.answers = new ArrayList<Answer>();
        selectedList  = new ArrayList<Button>();
     }
@@ -103,7 +106,6 @@ public class ExamQuestionFragment extends Fragment {
         for(int i = 0;i < qsArray.size();i++){
             Question q = qsArray.get(i);
             Answer a = new Answer(exam_id, q.getId(), student_id);
-            Log.d("Answer value",a.getExamId());
             answers.add(a);
         }
     }
@@ -130,8 +132,13 @@ public class ExamQuestionFragment extends Fragment {
         submit = view.findViewById(R.id.submit);
         submit.setVisibility(View.INVISIBLE);
         prev.setVisibility(View.INVISIBLE);
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        progress = (TextView) view.findViewById(R.id.progress);
 
         startTimer(time);
+        progressBar.setMax(size);
+        String prog = "1/"+String.valueOf(size);
+        progress.setText(prog);
 
         setupSelected();
         startExam();
@@ -266,7 +273,7 @@ public class ExamQuestionFragment extends Fragment {
         d.setText(qs.getD());
         d.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         if(selectedList.get(pos)!=null){
-            selectedList.get(pos).setBackgroundColor(getResources().getColor(R.color.purple_700));
+            selectedList.get(pos).setBackgroundColor(getResources().getColor(R.color.selected));
         }
     }
 
@@ -282,6 +289,9 @@ public class ExamQuestionFragment extends Fragment {
             prev.setVisibility(View.VISIBLE);
         }
         setQuestionDetails(qsArray.get(pos));
+        progressBar.setProgress(pos+1);
+        String prog = String.valueOf(pos+1)+"/"+String.valueOf(size);
+        progress.setText(prog);
     }
 
     private void prevQuestion(){
@@ -295,6 +305,9 @@ public class ExamQuestionFragment extends Fragment {
             next.setVisibility(View.VISIBLE);
         }
         setQuestionDetails(qsArray.get(pos));
+        progressBar.setProgress(pos+1);
+        String prog = String.valueOf(pos+1)+"/"+String.valueOf(size);
+        progress.setText(prog);
     }
 
     private void setAnswer(String answer,Button slct){
@@ -305,7 +318,7 @@ public class ExamQuestionFragment extends Fragment {
         Answer a = answers.get(pos);
         a.setMcq(answer);
         answers.set(pos, a);
-        slct.setBackgroundColor(getResources().getColor(R.color.purple_700));
+        slct.setBackgroundColor(getResources().getColor(R.color.selected));
     }
 
     private void submitAnswers(){

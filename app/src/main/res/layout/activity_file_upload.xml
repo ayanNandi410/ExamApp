@@ -4,26 +4,19 @@
     xmlns:tools ="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@color/gwhite"
     tools:context=".Exam.FileUploadActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Upload Image"
-        android:textSize="100px"
-        android:textColor="#d3d8e3"
+        android:id="@+id/questionView"
+        android:text="Question"
+        android:textSize="40px"
+        android:textColor="@color/black"
         android:layout_alignParentTop = "true"
         android:layout_centerHorizontal = "true"
-        android:layout_marginTop="50dp" />
-
-    <ImageView
-        android:id="@+id/img"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"
-        android:src="@drawable/ic_baseline_image_search_24" />
+        android:layout_marginTop="80dp" />
 
     <TextView
         android:id="@+id/item_img"
@@ -37,7 +30,7 @@
         android:text="Upload image"
         android:layout_marginRight="40dp"
         android:layout_marginLeft="40dp"
-        android:layout_marginTop="500dp"
+        android:layout_marginTop="300dp"
         android:padding="12dp"
         android:clickable="true"
         android:onClick="pick"
@@ -48,10 +41,10 @@
         android:id="@+id/create_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="UPLOAD"
-        android:layout_marginRight="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="650dp"
+        android:text="Submit"
+        android:layout_marginRight="80dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="500dp"
         android:elevation="10dp"
         android:textColor="@color/white"
         android:textSize="20dp"

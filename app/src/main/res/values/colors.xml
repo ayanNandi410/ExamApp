@@ -15,4 +15,5 @@
     <color name="over">#F0DA63</color>
     <color name="forthcoming">#2C8DD3</color>
     <color name="attempted">#2B2829</color>
+    <color name="selected">#D58002</color>
 </resources>

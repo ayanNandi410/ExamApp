@@ -23,6 +23,7 @@ import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.Api.UserApi;
 import com.project.examapp.Authentication.MainActivity;
 import com.project.examapp.Dashboard.student.StudentProfileFragment;
+import com.project.examapp.Dashboard.student.StudentTeachersListFragment;
 import com.project.examapp.Dashboard.teacher.ExamScoresFragment;
 import com.project.examapp.Dashboard.teacher.ScoresFragment;
 import com.project.examapp.Dashboard.teacher.StudentsListFragment;
@@ -86,9 +87,9 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    protected void onStart() {
 
-        super.onResume();
+        super.onStart();
         dialog = ProgressDialog.show(DashboardActivity.this, "",
                 "Loading.. Please wait...", true);
         dialog.show();
@@ -125,6 +126,13 @@ public class DashboardActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        dialog.dismiss();
     }
 
     private void startGettingDetails()
@@ -217,6 +225,14 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void teachersListFrag(){
+        homeActive = false;
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragment_dashboard, new StudentTeachersListFragment(student));
+        transaction.commit();
+    }
+
+    public void studentsListFrag(){
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 

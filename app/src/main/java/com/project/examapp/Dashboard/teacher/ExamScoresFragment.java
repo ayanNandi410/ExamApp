@@ -4,8 +4,10 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,14 +63,28 @@ public class ExamScoresFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        final SwipeRefreshLayout pullToRefresh = view.findViewById(R.id.pullToRefreshExamScoresList);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getExamsShow();
+                Toast.makeText(getContext(), "Exam List refreshed", Toast.LENGTH_SHORT).show();
+                pullToRefresh.setRefreshing(false);
+            }
+        });
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         dialog = ProgressDialog.show(getContext(), "",
                 "Loading.. Please wait...", true);
         dialog.show();
-        getExams();
+        getExamsShow();
     }
-    private void getExams(){
+    private void getExamsShow(){
         listView = (ListView) getView().findViewById(R.id.tchExamListView);
         Call<ArrayList<Exam>> callExamList = teacherDashboardApi.getExamList(teacher.getDept());
         callExamList.enqueue(new Callback<ArrayList<Exam>>() {
@@ -101,7 +117,8 @@ public class ExamScoresFragment extends Fragment {
             @Override
             public void onFailure(Call<ArrayList<Exam>> call, Throwable t) {
                 Log.e("Fetch Exam List","FAILURE");
-                Log.e("Fetch Exam list", t.toString());
+                dialog.dismiss();
+                ((DashboardActivity)getActivity()).toEmptyFragment("Some error occurred");
             }
         });
     }

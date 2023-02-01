@@ -5,15 +5,22 @@
     android:layout_height="match_parent"
     tools:context=".Dashboard.teacher.ExamScoresFragment">
 
-    <ListView
-        android:id="@+id/tchExamListView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/pullToRefreshExamScoresList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/custom_rectangle_blank"
-        android:padding="15sp"
-        android:layout_marginTop="20dp"
-        android:divider="@drawable/divider"
-        android:dividerHeight="10dp"
-        />
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/tchExamListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_rectangle_blank"
+            android:padding="15sp"
+            android:layout_marginTop="20dp"
+            android:divider="@drawable/divider"
+            android:dividerHeight="10dp"
+            />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </FrameLayout>

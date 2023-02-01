@@ -77,7 +77,7 @@ public class ExamsAdapter extends ArrayAdapter<Exam> {
                 examCond.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.over));
                 break;
 
-            case -1: examCond.setText("Forthcoming");
+            case -1: examCond.setText("Upcoming");
                 examCond.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.forthcoming));
                 examCond.setTextColor(Color.WHITE);
                 break;
