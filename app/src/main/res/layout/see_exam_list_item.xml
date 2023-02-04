@@ -51,6 +51,6 @@
         android:layout_alignWithParentIfMissing="true"
         android:gravity="center_vertical"
         android:text="Subject"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
 </RelativeLayout>
