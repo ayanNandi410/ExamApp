@@ -11,11 +11,9 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,7 +23,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,10 +30,11 @@ import com.project.examapp.Api.FileUploadApi;
 import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.Dashboard.DashboardActivity;
 import com.project.examapp.R;
-import com.project.examapp.models.Answer;
 
 import java.io.File;
-import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -53,8 +51,7 @@ public class FileUploadActivity extends AppCompatActivity {
     ImageView image;
     Button btn_upload;
     Uri selectedFile;
-    String part_image, examTime;
-    Answer answer;
+    String part_image, examTime, examId, studentId;
 
     // Permissions for accessing the storage
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -132,12 +129,10 @@ public class FileUploadActivity extends AppCompatActivity {
 
         Bundle b = getIntent().getExtras();
         qs.setText(b.getString("question"));
-        String exam_id = b.getString("exam_id");
-        String student_id = b.getString("student_id");
+        examId = b.getString("exam_id");
+        studentId = b.getString("student_id");
         time = b.getInt("time");
-        exmName.setText(exam_id);
-
-        answer = new Answer(exam_id,"",student_id);
+        exmName.setText(examId);
 
         btn_upload.setOnClickListener(v -> {
             uploadImage();
@@ -175,11 +170,17 @@ public class FileUploadActivity extends AppCompatActivity {
             return;
         }
         File imageFile = new File(part_image);// Create a file using the absolute path of the image
+
         RequestBody reqBody = RequestBody.create(MediaType.parse("multipart/form-file"), imageFile);
         MultipartBody.Part partImage = MultipartBody.Part.createFormData("file", imageFile.getName(), reqBody);
+        RequestBody examID = RequestBody.create(MediaType.parse("text/plain"),examId);
+        RequestBody studentID = RequestBody.create(MediaType.parse("text/plain"),studentId);
+
+        String currDateTime = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date());
+        RequestBody timestamp = RequestBody.create(MediaType.parse("text/plain"),currDateTime);
 
         FileUploadApi api = RetrofitClient.getInstance().getAPI();
-        Call<ResponseBody> upload = api.uploadAnswerImage(partImage, answer.getExamId(), answer.getStudentId());
+        Call<ResponseBody> upload = api.uploadAnswerImage(partImage, examID,studentID,timestamp);
         upload.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

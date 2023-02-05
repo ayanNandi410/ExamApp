@@ -104,10 +104,10 @@ public class ExamScoresFragment extends Fragment {
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            if (!examList.get(i).isAvailable()) {
+                            if (examList.get(i).getType().equals("mcq")) {
                                 SeeScoreAlert(i);
                             } else {
-                                Toast.makeText(getContext(), "Exam not available", Toast.LENGTH_SHORT).show();
+                                SeeFileSubmissionAlert(i);
                             }
                         }
                     });
@@ -134,6 +134,39 @@ public class ExamScoresFragment extends Fragment {
         builder.setMessage(message);
         // Set Alert Title
         builder.setTitle("Exam Scores");
+
+        // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
+        builder.setCancelable(false);
+
+        // Set the positive button with yes name Lambda OnClickListener method is use of DialogInterface interface.
+        builder.setPositiveButton("Yes", (DialogInterface.OnClickListener) (dialog, which) -> {
+            // When the user click yes button then app will close
+            ((DashboardActivity)getActivity()).toScoresFragment(exam);
+        });
+
+        // Set the Negative button with No name Lambda OnClickListener method is use of DialogInterface interface.
+        builder.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog, which) -> {
+            // If user click no then dialog box is canceled.
+            dialog.cancel();
+        });
+
+        // Create the Alert dialog
+        AlertDialog alertDialog = builder.create();
+        // Show the Alert Dialog box
+        alertDialog.show();
+    }
+
+    private void SeeFileSubmissionAlert(int i)
+    {
+        Exam exam = adapter.getItem(i);
+        // Create the object of AlertDialog Builder class
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        // Set the message show for the Alert time
+        String message = "\nExam Name : " + exam.getExamName() + "\n\nDo you wish to see submissions ?\n";
+        builder.setMessage(message);
+        // Set Alert Title
+        builder.setTitle("Exam Submissions");
 
         // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
         builder.setCancelable(false);

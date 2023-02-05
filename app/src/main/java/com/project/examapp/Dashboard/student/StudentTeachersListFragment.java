@@ -67,7 +67,6 @@ public class StudentTeachersListFragment extends Fragment {
             @Override
             public void onResponse(Call<ArrayList<Teacher>> call, Response<ArrayList<Teacher>> response) {
                 if(response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Teachers List fetched", Toast.LENGTH_SHORT).show();
                     teachersList = response.body();
 
                     // Create the adapter to convert the array to views

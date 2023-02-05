@@ -71,7 +71,6 @@ public class SubjectsFragment extends Fragment {
             @Override
             public void onResponse(Call<ArrayList<Subject>> call, Response<ArrayList<Subject>> response) {
                 if(response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Subject List fetched", Toast.LENGTH_SHORT).show();
                     subjectList = response.body();
 
                     // Create the adapter to convert the array to views

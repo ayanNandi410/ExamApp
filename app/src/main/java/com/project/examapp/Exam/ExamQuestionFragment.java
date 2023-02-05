@@ -26,13 +26,10 @@ import com.project.examapp.Api.AnswerApi;
 import com.project.examapp.Api.GetQuestionApi;
 import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.Dashboard.DashboardActivity;
-import com.project.examapp.Exam.ExamPageActivity;
 import com.project.examapp.R;
-import com.project.examapp.models.Answer;
 import com.project.examapp.models.Attempt;
+import com.project.examapp.models.MCQAnswer;
 import com.project.examapp.models.Question;
-
-import org.checkerframework.checker.units.qual.A;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,7 +49,7 @@ public class ExamQuestionFragment extends Fragment {
     AnswerApi answerApi;
     GetQuestionApi questionApi;
     ArrayList<Question> qsArray;
-    ArrayList<Answer> answers;
+    ArrayList<MCQAnswer> MCQAnswers;
     TextView question, marks, examTime, progress;
     List<Button> selectedList;
     Button a, b, c, d, prev, next, submit;
@@ -99,7 +96,7 @@ public class ExamQuestionFragment extends Fragment {
         this.time = time;
         this.qsArray = qsArray;
         this.size = qsArray.size();
-        this.answers = new ArrayList<Answer>();
+        this.MCQAnswers = new ArrayList<MCQAnswer>();
        selectedList  = new ArrayList<Button>();
     }
 
@@ -112,8 +109,8 @@ public class ExamQuestionFragment extends Fragment {
         exam_id = this.getArguments().getString("exam_id");
         for(int i = 0;i < qsArray.size();i++){
             Question q = qsArray.get(i);
-            Answer a = new Answer(exam_id, q.getId(), student_id);
-            answers.add(a);
+            MCQAnswer a = new MCQAnswer(exam_id, q.getId(), student_id);
+            MCQAnswers.add(a);
         }
     }
 
@@ -227,7 +224,7 @@ public class ExamQuestionFragment extends Fragment {
 
         // Set the message show for the Alert time
         int ct = countNull();
-        String message = "Do you wish to submit answers and end exam ?";
+        String message = "Do you wish to submit Answers and end exam ?";
         if(ct!=0){
             if(ct==1) {
                 message = ct + " question not yet answered\n" + message;
@@ -322,23 +319,23 @@ public class ExamQuestionFragment extends Fragment {
             selectedList.get(pos).setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         }
         selectedList.set(pos, slct);
-        Answer a = answers.get(pos);
+        MCQAnswer a = MCQAnswers.get(pos);
         a.setMcq(answer);
-        answers.set(pos, a);
+        MCQAnswers.set(pos, a);
         slct.setBackgroundColor(getResources().getColor(R.color.selected));
     }
 
     private void submitAnswers()
     {
         String currDateTime = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date());
-        answers.get(0).setTimestamp(currDateTime);
+        MCQAnswers.get(0).setTimestamp(currDateTime);
 
-        Call<ResponseBody> callAnswerPost = answerApi.postAnswers(answers);
+        Call<ResponseBody> callAnswerPost = answerApi.postAnswers(MCQAnswers);
         callAnswerPost.enqueue(new Callback<okhttp3.ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()) {
-                    Log.e("Submit answers","SUCCESS");
+                    Log.e("Submit Answers","SUCCESS");
                     Toast.makeText(getContext(), "Answers submitted", Toast.LENGTH_LONG).show();
                     Intent endExamintent = new Intent(getContext(), DashboardActivity.class);
                     dialog.dismiss();
@@ -352,10 +349,10 @@ public class ExamQuestionFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("Submit answers","FAILURE");
-                Log.e("Submit answers",t.toString());
+                Log.e("Submit Answers","FAILURE");
+                Log.e("Submit Answers",t.toString());
                 dialog.dismiss();
-                Toast.makeText(getContext(), "Failed to submit answers", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Failed to submit Answers", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -364,7 +361,7 @@ public class ExamQuestionFragment extends Fragment {
     private void registerAttemptAndSubmit()
     {
         dialog = ProgressDialog.show(getContext(), "",
-                "Submitting answers.. Please wait...", true);
+                "Submitting Answers.. Please wait...", true);
         dialog.show();
         Attempt attempt = new Attempt();
         attempt.setExam_id(exam_id);
@@ -381,8 +378,8 @@ public class ExamQuestionFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("Submit answers","FAILURE");
-                Log.e("Submit answers",t.toString());
+                Log.e("Submit Answers","FAILURE");
+                Log.e("Submit Answers",t.toString());
                 dialog.dismiss();
                 Toast.makeText(getContext(), "Failed to register attempt", Toast.LENGTH_LONG).show();
             }

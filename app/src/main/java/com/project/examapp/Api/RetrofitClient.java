@@ -2,6 +2,7 @@ package com.project.examapp.Api;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.project.examapp.Constants;
 
 import java.io.IOException;
 
@@ -13,7 +14,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private  static final String BASE_URL = "https://ea45-110-227-75-53.in.ngrok.io";                          // Base URL
+    private  static final String BASE_URL = Constants.URL;  // Base URL
     private static RetrofitClient mInstance;
     private final Retrofit retrofit;
     private final FirebaseAuth mAuth;

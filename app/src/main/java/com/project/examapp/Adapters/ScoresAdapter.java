@@ -22,32 +22,41 @@ import java.util.Locale;
 
 public class ScoresAdapter extends ArrayAdapter<Result> {
     ArrayList<Result> resultList;
+    String type;
 
-    public ScoresAdapter(@NonNull Context context, ArrayList<Result> resultList) {
+    public ScoresAdapter(@NonNull Context context, ArrayList<Result> resultList,String type) {
         super(context,0, resultList);
         this.resultList = resultList;
+        this.type = type;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        // Get the data item for this position
+
         Result result = getItem(position);
-        // Check if an existing view is being reused, otherwise inflate the view
+
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.score_list_item, parent, false);
         }
-        // Lookup view for data population
+
         TextView examID = (TextView) convertView.findViewById(R.id.scoreExamId);
         TextView stName = (TextView) convertView.findViewById(R.id.scoreStudentName);
         TextView stMarks = (TextView) convertView.findViewById(R.id.scoreMarks);
         TextView stTimestamp = (TextView) convertView.findViewById(R.id.scoreTimestamp);
-        // Populate the data into the template view using the data object
+
         examID.setText(result.getExamId());
-        String score = String.valueOf(result.getMarks())+"/"+String.valueOf(result.getTotal());
-        stMarks.setText(score);
         stName.setText(result.getStudent_name());
         stTimestamp.setText(result.getTimestamp());
+        if(type.equals("mcq"))
+        {
+            String score = String.valueOf(result.getMarks())+"/"+String.valueOf(result.getTotal());
+            stMarks.setText(score);
+        }
+        else
+        {
+            stMarks.setVisibility(View.INVISIBLE);
+        }
 
         // Return the completed view to render on screen
         return convertView;

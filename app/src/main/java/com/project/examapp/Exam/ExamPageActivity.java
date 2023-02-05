@@ -16,7 +16,7 @@ import com.project.examapp.Api.ResultApi;
 import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.common.ProgressBarFragment;
 import com.project.examapp.R;
-import com.project.examapp.models.Answer;
+import com.project.examapp.models.MCQAnswer;
 import com.project.examapp.models.Question;
 import com.project.examapp.models.Result;
 
@@ -36,7 +36,7 @@ public class ExamPageActivity extends AppCompatActivity {
     ArrayList<Question> qsList;
     List<Result> results;
     TextView examName, examTime;
-    ArrayList<Answer> answers;
+    ArrayList<MCQAnswer> MCQAnswers;
     FirebaseAuth mAuth;
     Integer time;
 
@@ -99,7 +99,7 @@ public class ExamPageActivity extends AppCompatActivity {
                     results = response.body();
                     FirebaseUser user = mAuth.getCurrentUser();
 
-                    //answers = new ArrayList<Answer>();
+                    //MCQAnswers = new ArrayList<MCQAnswer>();
                     showQuestionFragment();
                 }
             }

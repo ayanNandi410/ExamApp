@@ -36,7 +36,7 @@ public class ScoresFragment extends Fragment {
     RetrofitClient client;
     TeacherDashboardApi teacherDashboardApi;
     ListView listView;
-    String exam_id;
+    String exam_id,type;
     public ScoresFragment() {
     }
 
@@ -44,10 +44,18 @@ public class ScoresFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         exam_id = getArguments().getString("exam-id");
+        type = getArguments().getString("type");
         //Retrofit call
         client = RetrofitClient.getInstance();
         teacherDashboardApi = client.getRetrofit().create(TeacherDashboardApi.class);
-        ((DashboardActivity) getActivity()).setTitle("Exam Scores ");
+        if(type.equals("mcq"))
+        {
+            ((DashboardActivity) getActivity()).setTitle("Exam Scores ");
+        }
+        else
+        {
+            ((DashboardActivity) getActivity()).setTitle("Exam Submissions ");
+        }
     }
 
     @Override
@@ -82,7 +90,7 @@ public class ScoresFragment extends Fragment {
                     }
 
                     // Create the adapter to convert the array to views
-                    adapter = new ScoresAdapter(getContext(), scoresList);
+                    adapter = new ScoresAdapter(getContext(), scoresList, type);
 
                     // Attach the adapter to a ListView
                     listView.setAdapter(adapter);
@@ -91,7 +99,14 @@ public class ScoresFragment extends Fragment {
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            ExpandScoreAlert(i);
+                            if(type.equals("mcq"))
+                            {
+                                ExpandScoreAlert(i);
+                            }
+                            else
+                            {
+                                ((DashboardActivity)getActivity()).toShowSubmissionsFragment(scoresList.get(i));
+                            }
                         }
                     });
                 }

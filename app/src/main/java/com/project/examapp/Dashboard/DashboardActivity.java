@@ -30,6 +30,7 @@ import com.project.examapp.Dashboard.student.StudentProfileFragment;
 import com.project.examapp.Dashboard.student.StudentTeachersListFragment;
 import com.project.examapp.Dashboard.teacher.ExamScoresFragment;
 import com.project.examapp.Dashboard.teacher.ScoresFragment;
+import com.project.examapp.Dashboard.teacher.ShowExamFileFragment;
 import com.project.examapp.Dashboard.teacher.StudentsListFragment;
 import com.project.examapp.Dashboard.teacher.TeacherProfileFragment;
 import com.project.examapp.common.EmptyFragment;
@@ -39,6 +40,7 @@ import com.project.examapp.Dashboard.student.StudentDashboardFragment;
 import com.project.examapp.Dashboard.student.StudentExamListFragment;
 import com.project.examapp.Dashboard.teacher.TeacherDashboardFragment;
 import com.project.examapp.models.Exam;
+import com.project.examapp.models.Result;
 import com.project.examapp.models.Student;
 import com.project.examapp.models.Teacher;
 import com.project.examapp.models.User;
@@ -68,21 +70,18 @@ public class DashboardActivity extends AppCompatActivity {
     Runnable FetchDetailsTask = new Runnable() {
         @Override
         public void run() {
-            if(!typeSetOrNot)
-            {
-                if(!isNetworkAvailable())
-                {
+            if (!typeSetOrNot) {
+                if (!isNetworkAvailable()) {
                     dialog.dismiss();
                     toEmptyFragment("No Network");
-                }
-                else {
+                } else {
                     dialog.show();
                     getUserDetails();
                 }
             }
-            handler.postAtTime(this,SystemClock.uptimeMillis()+8000 );
-            }
-        };
+            handler.postAtTime(this, SystemClock.uptimeMillis() + 8000);
+        }
+    };
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
@@ -122,11 +121,9 @@ public class DashboardActivity extends AppCompatActivity {
         ImageButton signOut = findViewById(R.id.logOutB);
         ImageButton backButton = findViewById(R.id.backB);
         title = findViewById(R.id.textView);
-        signOut.setOnClickListener(new View.OnClickListener()
-        {
+        signOut.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 mAuth.signOut();
                 Log.d(TAG, "Signed out");
                 Toast.makeText(DashboardActivity.this, "Successfully signed out", Toast.LENGTH_SHORT).show();
@@ -136,62 +133,50 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-        backButton.setOnClickListener(new View.OnClickListener()
-        {
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                if(homeActive){
+            public void onClick(View v) {
+                if (homeActive) {
                     BackPress();
-                }
-                else
-                {
-                   toDashboard();
+                } else {
+                    toDashboard();
                 }
             }
         });
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
-        if(homeActive)
-        {
+        if (homeActive) {
             dialog.dismiss();
         }
     }
 
-    private void startGettingDetails()
-    {
+    private void startGettingDetails() {
         handler.removeCallbacks(FetchDetailsTask);
         handler.postDelayed(FetchDetailsTask, 100);
     }
 
-    private void getUserDetails()
-    {
+    private void getUserDetails() {
         Call<User> callUser = userApi.getUser(user.getEmail());
         callUser.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                if(response.isSuccessful()) {
-                    Log.i("User fetch","Success");
+                if (response.isSuccessful()) {
+                    Log.i("User fetch", "Success");
                     dashboardUser = response.body();
                     type = dashboardUser.getType();
-                    Log.i("User Type",type);
-                    if(type.equals("student"))
-                    {
+                    Log.i("User Type", type);
+                    if (type.equals("student")) {
                         student = dashboardUser.getStudent();
                         typeSetOrNot = true;
                         toDashboard();
-                    }
-                    else if(type.equals("teacher"))
-                    {
+                    } else if (type.equals("teacher")) {
                         teacher = dashboardUser.getTeacher();
                         typeSetOrNot = true;
                         toDashboard();
-                    }
-                    else {
+                    } else {
                         toEmptyFragment("Some error occurred");
                     }
                 }
@@ -199,12 +184,12 @@ public class DashboardActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Log.e("User fetch","Failure");
+                Log.e("User fetch", "Failure");
             }
         });
     }
 
-    public void setTitle(String titleText){
+    public void setTitle(String titleText) {
         title.setText(titleText);
     }
 
@@ -239,14 +224,14 @@ public class DashboardActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void showProgressBar(){
+    private void showProgressBar() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         transaction.replace(R.id.fragment_dashboard, new ProgressBarFragment());
         transaction.commit();
     }
 
-    public void examListFrag(){
+    public void examListFrag() {
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -254,7 +239,7 @@ public class DashboardActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    public void teachersListFrag(){
+    public void teachersListFrag() {
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -262,7 +247,7 @@ public class DashboardActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    public void studentsListFrag(){
+    public void studentsListFrag() {
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -270,15 +255,15 @@ public class DashboardActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    public void subjectsFrag(){
+    public void subjectsFrag() {
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.fragment_dashboard, new SubjectsFragment(student,teacher));
+        transaction.replace(R.id.fragment_dashboard, new SubjectsFragment(student, teacher));
         transaction.commit();
     }
 
-    public void stProfileFrag(){
+    public void stProfileFrag() {
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -287,7 +272,7 @@ public class DashboardActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    public void trProfileFrag(){
+    public void trProfileFrag() {
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -296,24 +281,22 @@ public class DashboardActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    private void toDashboard(){
+    private void toDashboard() {
         handler.removeCallbacks(FetchDetailsTask);
         title.setText("Dashboard");
         homeActive = true;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(type.equals("student")){
+        if (type.equals("student")) {
             dialog.dismiss();
             transaction.replace(R.id.fragment_dashboard, new StudentDashboardFragment(student));
-        }
-        else if(type.equals("teacher")){
+        } else if (type.equals("teacher")) {
             dialog.dismiss();
             transaction.replace(R.id.fragment_dashboard, new TeacherDashboardFragment(teacher));
         }
         transaction.commit();
     }
 
-    public void examScoresFrag()
-    {
+    public void examScoresFrag() {
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         ExamScoresFragment examScoresFragment = new ExamScoresFragment(teacher);
@@ -321,23 +304,31 @@ public class DashboardActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    public void toScoresFragment(Exam exam)
-    {
+    public void toScoresFragment(Exam exam) {
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         ScoresFragment scoresFragment = new ScoresFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("exam-id",exam.getExam_id());
+        bundle.putString("exam-id", exam.getExam_id());
+        bundle.putString("type", exam.getType());
         scoresFragment.setArguments(bundle);
         transaction.replace(R.id.fragment_dashboard, scoresFragment);
         transaction.commit();
     }
 
-    public void toEmptyFragment(String text)
-    {
+    public void toEmptyFragment(String text) {
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         EmptyFragment fragment = new EmptyFragment(text);
+        transaction.replace(R.id.fragment_dashboard, fragment);
+        transaction.commit();
+    }
+
+    public void toShowSubmissionsFragment(Result result)
+    {
+        homeActive = false;
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        ShowExamFileFragment fragment = new ShowExamFileFragment(result);
         transaction.replace(R.id.fragment_dashboard, fragment);
         transaction.commit();
     }
