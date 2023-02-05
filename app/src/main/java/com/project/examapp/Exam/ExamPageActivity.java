@@ -30,7 +30,7 @@ import retrofit2.Response;
 public class ExamPageActivity extends AppCompatActivity {
 
     RetrofitClient client;
-    String exam_id, student_id;
+    String exam_id, student_id, type, question;
     GetQuestionApi questionApi;
     ResultApi resultApi;
     ArrayList<Question> qsList;
@@ -54,9 +54,8 @@ public class ExamPageActivity extends AppCompatActivity {
         exam_id = intent.getStringExtra("exam_id");
         time = intent.getIntExtra("time", 100);
         student_id = intent.getStringExtra("student_id");
-
-        //startTime = time*60*1000;
-        //startTimer(time);
+        type = intent.getStringExtra("type");
+        question = intent.getStringExtra("question");
 
         client = RetrofitClient.getInstance();
         questionApi = client.getRetrofit().create(GetQuestionApi.class);
@@ -81,7 +80,7 @@ public class ExamPageActivity extends AppCompatActivity {
                     Log.e("QS List", String.valueOf(qsList.size()));
                     FirebaseUser user = mAuth.getCurrentUser();
 
-                    showQuestionFragment();
+                    showExamFragment();
 
                 }
             }
@@ -128,15 +127,14 @@ public class ExamPageActivity extends AppCompatActivity {
     }
 
 
-    public void showQuestionFragment()
+    public void showExamFragment()
     {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        ExamQuestionFragment qsFragment = new ExamQuestionFragment(qsList,time,student_id);
-        Bundle bundle = new Bundle();
-        bundle.putString("exam_id", exam_id );
-        qsFragment.setArguments(bundle);
-        transaction.replace(R.id.questionSet, qsFragment);
-        transaction.commit();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            ExamQuestionFragment qsFragment = new ExamQuestionFragment(qsList,time,student_id);
+            Bundle bundle = new Bundle();
+            bundle.putString("exam_id", exam_id );
+            qsFragment.setArguments(bundle);
+            transaction.replace(R.id.questionSet, qsFragment);
+            transaction.commit();
     }
 }

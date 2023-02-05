@@ -104,7 +104,7 @@ public class ExamScoresFragment extends Fragment {
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            if (!examList.get(i).isAttempted()) {
+                            if (!examList.get(i).isAvailable()) {
                                 SeeScoreAlert(i);
                             } else {
                                 Toast.makeText(getContext(), "Exam not available", Toast.LENGTH_SHORT).show();

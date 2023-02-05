@@ -8,7 +8,9 @@ public class Exam {
     private String description;
     private String subject_id;
     private String dept;
-    private boolean attempted;
+    private boolean isAvailable;
+    private String type;
+    private String question = "";
 
     public Exam(String name,String description, String subject_id)
     {
@@ -78,11 +80,27 @@ public class Exam {
         this.date = date;
     }
 
-    public boolean isAttempted() {
-        return attempted;
+    public String getType() {
+        return type;
     }
 
-    public void setAttempted(boolean attempted) {
-        this.attempted = attempted;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
     }
 }

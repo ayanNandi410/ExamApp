@@ -11,23 +11,29 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.examapp.Api.FileUploadApi;
 import com.project.examapp.Api.RetrofitClient;
+import com.project.examapp.Dashboard.DashboardActivity;
 import com.project.examapp.R;
+import com.project.examapp.models.Answer;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,18 +48,49 @@ import retrofit2.Response;
 
 public class FileUploadActivity extends AppCompatActivity {
 
-    TextView imgPath;
+    TextView imgPath, qs, exmName,exmTime;
     private static final int PICK_IMAGE_REQUEST = 9544;
     ImageView image;
     Button btn_upload;
     Uri selectedFile;
-    String part_image;
+    String part_image, examTime;
+    Answer answer;
 
     // Permissions for accessing the storage
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static final String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.MANAGE_EXTERNAL_STORAGE
+    };
+
+    Integer time, hr, min, sec, size;
+    long endTime, updatedTime;
+    Handler handler;
+    Runnable UpdateTimeTask = new Runnable() {
+        @Override
+        public void run() {
+            final long end = endTime;
+            updatedTime = endTime;
+            long millis = end - SystemClock.uptimeMillis();
+
+            if(millis<0)
+            {
+                toDashboard();
+            }
+            else{
+                int seconds = (int) (millis / 1000);
+                int minutes = seconds / 60;
+                seconds     = seconds % 60;
+
+                if (seconds < 10) {
+                    exmTime.setText("" + minutes + ":0" + seconds);
+                } else {
+                    exmTime.setText("" + minutes + ":" + seconds);
+                }
+                handler.postAtTime(this,SystemClock.uptimeMillis()+1000 );
+            }
+        }
     };
 
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
@@ -61,60 +98,69 @@ public class FileUploadActivity extends AppCompatActivity {
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            Intent data = result.getData();
-                            selectedFile = data.getData(); // Get the image file URI
-                            String mimeType = getContentResolver().getType(selectedFile);
-                            Log.d(TAG," URL :" +mimeType);
-                           String contentData;
-                            if ("image".equals(mimeType.substring(0,5))) {
-                                contentData = MediaStore.Images.Media.DATA;
-                            } else if ("video".equals(mimeType.substring(0,5))) {
-                                contentData = MediaStore.Video.Media.DATA;
-                            } else if ("audio".equals(mimeType.substring(0,5))) {
-                                contentData = MediaStore.Audio.Media.DATA;
-                            } else {
-                                contentData = MediaStore.Files.FileColumns.MEDIA_TYPE;
-                            }
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        selectedFile = data.getData(); // Get the image file URI
+                        String mimeType = getContentResolver().getType(selectedFile);
+                        Log.d(TAG," URL :" +mimeType);
 
-                            String[] imageProjection = {contentData};
-                            Cursor cursor = getContentResolver().query(selectedFile, imageProjection, null, null, null);
-                            if(cursor != null) {
-                                cursor.moveToFirst();
-                                int indexImage = cursor.getColumnIndex(contentData);
-                                part_image = cursor.getString(indexImage);
-                                imgPath.setText(part_image);    // Get the image file absolute path
-                                Log.d(TAG," URL :" +part_image);
-                                Bitmap bitmap = null;
-                                try {
-                                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedFile);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                image.setImageBitmap(bitmap);                                                       // Set the ImageView with the bitmap of the image
-                            }
+                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                        Cursor cursor = getContentResolver().query(selectedFile, filePathColumn, null, null, null);
+                        if(cursor != null) {
+                            cursor.moveToFirst();
+                            int indexImage = cursor.getColumnIndex(filePathColumn[0]);
+                            part_image = cursor.getString(indexImage);
+                            imgPath.setText(part_image);    // Get the image file absolute path
+                            Log.d(TAG," URL :" +part_image);
                         }
                     }
+                }
             });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_upload);
+
+        qs = findViewById(R.id.questionView);
         imgPath = findViewById(R.id.item_img);
-        //image = findViewById(R.id.img);
         btn_upload = findViewById(R.id.create_item);
+        exmName = findViewById(R.id.examFName);
+        exmTime = findViewById(R.id.FExamTime);
+        handler = new Handler();
+
+        Bundle b = getIntent().getExtras();
+        qs.setText(b.getString("question"));
+        String exam_id = b.getString("exam_id");
+        String student_id = b.getString("student_id");
+        time = b.getInt("time");
+        exmName.setText(exam_id);
+
+        answer = new Answer(exam_id,"",student_id);
 
         btn_upload.setOnClickListener(v -> {
             uploadImage();
         });
+        startTimer(time);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        toDashboard();
     }
 
     // Method for starting the activity for selecting image from phone storage
     public void pick(View view) {
         verifyStoragePermissions(FileUploadActivity.this);
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
+        intent.setType("application/pdf");
 
         someActivityResultLauncher.launch(intent);
     }
@@ -123,22 +169,23 @@ public class FileUploadActivity extends AppCompatActivity {
 
     // Upload the image to the remote database
     public void uploadImage() {
-        File imageFile = new File(part_image);                                                          // Create a file using the absolute path of the image
+        if(part_image==null)
+        {
+            Toast.makeText(FileUploadActivity.this, "Please use different app for uploading", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        File imageFile = new File(part_image);// Create a file using the absolute path of the image
         RequestBody reqBody = RequestBody.create(MediaType.parse("multipart/form-file"), imageFile);
         MultipartBody.Part partImage = MultipartBody.Part.createFormData("file", imageFile.getName(), reqBody);
+
         FileUploadApi api = RetrofitClient.getInstance().getAPI();
-        Call<ResponseBody> upload = api.uploadImage(partImage);
+        Call<ResponseBody> upload = api.uploadAnswerImage(partImage, answer.getExamId(), answer.getStudentId());
         upload.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()) {
-                    Toast.makeText(FileUploadActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
-                    /*
-                    Intent main = new Intent(Upload.this, MainActivity.class);
-                    main.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(main);
-
-                     */
+                    Toast.makeText(FileUploadActivity.this, "File Uploaded", Toast.LENGTH_SHORT).show();
+                    toDashboard();
                 }
             }
 
@@ -147,6 +194,13 @@ public class FileUploadActivity extends AppCompatActivity {
                 Toast.makeText(FileUploadActivity.this, "Request failed", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void startTimer(Integer time){
+        long interval = (Integer)(time * 60 * 1000);
+        endTime = SystemClock.uptimeMillis()+interval;
+        handler.removeCallbacks(UpdateTimeTask);
+        handler.postDelayed(UpdateTimeTask, 100);
     }
 
     public static void verifyStoragePermissions(Activity activity) {
@@ -161,5 +215,14 @@ public class FileUploadActivity extends AppCompatActivity {
                     REQUEST_EXTERNAL_STORAGE
             );
         }
+    }
+
+    private void toDashboard()
+    {
+        Toast.makeText(FileUploadActivity.this, "Exam Ended", Toast.LENGTH_SHORT).show();
+        Intent endExamIntent = new Intent(this, DashboardActivity.class);
+        this.finish();
+        handler.removeCallbacks(UpdateTimeTask);
+        startActivity(endExamIntent);
     }
 }

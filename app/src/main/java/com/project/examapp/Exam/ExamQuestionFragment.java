@@ -29,7 +29,10 @@ import com.project.examapp.Dashboard.DashboardActivity;
 import com.project.examapp.Exam.ExamPageActivity;
 import com.project.examapp.R;
 import com.project.examapp.models.Answer;
+import com.project.examapp.models.Attempt;
 import com.project.examapp.models.Question;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +59,7 @@ public class ExamQuestionFragment extends Fragment {
     long endTime;
     Handler handler;
     ProgressBar progressBar;
+    ProgressDialog dialog;
 
     Runnable UpdateTimeTask = new Runnable() {
         @Override
@@ -205,7 +209,7 @@ public class ExamQuestionFragment extends Fragment {
 
     private void stopTimer()
     {
-        submitAnswers();
+        registerAttemptAndSubmit();
     }
 
     private void setupSelected(){
@@ -241,7 +245,7 @@ public class ExamQuestionFragment extends Fragment {
         // Set the positive button with yes name Lambda OnClickListener method is use of DialogInterface interface.
         builder.setPositiveButton("Submit", (DialogInterface.OnClickListener) (dialog, which) -> {
             // When the user click yes button then app will close
-            submitAnswers();
+            registerAttemptAndSubmit();
         });
 
         // Set the Negative button with No name Lambda OnClickListener method is use of DialogInterface interface.
@@ -322,11 +326,7 @@ public class ExamQuestionFragment extends Fragment {
     }
 
     private void submitAnswers(){
-        Log.d("Submit answer", answers.toString());
-        handler.removeCallbacks(UpdateTimeTask);
-        ProgressDialog dialog = ProgressDialog.show(getContext(), "",
-                "Submitting answers.. Please wait...", true);
-        dialog.show();
+
         Call<ResponseBody> callAnswerPost = answerApi.postAnswers(answers);
         callAnswerPost.enqueue(new Callback<okhttp3.ResponseBody>() {
             @Override
@@ -337,6 +337,9 @@ public class ExamQuestionFragment extends Fragment {
                     Intent endExamintent = new Intent(getContext(), DashboardActivity.class);
                     dialog.dismiss();
                     getActivity().finish();
+
+                    handler.removeCallbacks(UpdateTimeTask);
+
                     startActivity(endExamintent);
                 }
             }
@@ -350,6 +353,34 @@ public class ExamQuestionFragment extends Fragment {
             }
         });
 
+    }
+
+    private void registerAttemptAndSubmit()
+    {
+        dialog = ProgressDialog.show(getContext(), "",
+                "Submitting answers.. Please wait...", true);
+        dialog.show();
+        Attempt attempt = new Attempt();
+        attempt.setExam_id(exam_id);
+        attempt.setStudent_id(student_id);
+        Call<ResponseBody> callAttemptPost = answerApi.postAttempt(attempt);
+        callAttemptPost.enqueue(new Callback<okhttp3.ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()) {
+                    Log.e("Attempt Registration","SUCCESS");
+                    submitAnswers();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("Submit answers","FAILURE");
+                Log.e("Submit answers",t.toString());
+                dialog.dismiss();
+                Toast.makeText(getContext(), "Failed to register attempt", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private int countNull(){

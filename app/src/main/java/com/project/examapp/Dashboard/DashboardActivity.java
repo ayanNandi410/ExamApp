@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +40,8 @@ import com.project.examapp.models.Student;
 import com.project.examapp.models.Teacher;
 import com.project.examapp.models.User;
 
+import java.net.InetAddress;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -64,6 +67,11 @@ public class DashboardActivity extends AppCompatActivity {
         public void run() {
             if(!typeSetOrNot)
             {
+                if(!isInternetAvailable())
+                {
+                    dialog.dismiss();
+                    toEmptyFragment("No internet available");
+                }
                 getUserDetails();
             }
             handler.postAtTime(this,SystemClock.uptimeMillis()+8000 );
@@ -83,16 +91,18 @@ public class DashboardActivity extends AppCompatActivity {
         student = null;
         teacher = null;
         typeSetOrNot = false;
+        homeActive = false;
         type = "none";
+
+        dialog = ProgressDialog.show(DashboardActivity.this, "",
+                "Loading.. Please wait...", true);
+        dialog.show();
     }
 
     @Override
     protected void onStart() {
 
         super.onStart();
-        dialog = ProgressDialog.show(DashboardActivity.this, "",
-                "Loading.. Please wait...", true);
-        dialog.show();
         startGettingDetails();
 
 
@@ -106,6 +116,7 @@ public class DashboardActivity extends AppCompatActivity {
             {
                 mAuth.signOut();
                 Log.d(TAG, "Signed out");
+                Toast.makeText(DashboardActivity.this, "Successfully signed out", Toast.LENGTH_SHORT).show();
                 Intent sOut = new Intent(DashboardActivity.this, MainActivity.class);
                 finish();
                 startActivity(sOut);
@@ -132,7 +143,10 @@ public class DashboardActivity extends AppCompatActivity {
     public void onResume()
     {
         super.onResume();
-        dialog.dismiss();
+        if(homeActive)
+        {
+            dialog.dismiss();
+        }
     }
 
     private void startGettingDetails()
@@ -163,6 +177,9 @@ public class DashboardActivity extends AppCompatActivity {
                         teacher = dashboardUser.getTeacher();
                         typeSetOrNot = true;
                         toDashboard();
+                    }
+                    else {
+                        toEmptyFragment("Some error occurred");
                     }
                 }
             }
@@ -214,6 +231,17 @@ public class DashboardActivity extends AppCompatActivity {
 
         transaction.replace(R.id.fragment_dashboard, new ProgressBarFragment());
         transaction.commit();
+    }
+
+    public boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            //You can replace it with your name
+            return !ipAddr.equals("");
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public void examListFrag(){

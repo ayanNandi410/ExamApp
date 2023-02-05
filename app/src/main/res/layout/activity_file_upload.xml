@@ -1,55 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools ="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gwhite"
-    tools:context=".Exam.FileUploadActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Dashboard.DashboardActivity">
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:background="@drawable/custom_rectangle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/examFName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/questionView"
-        android:text="Question"
-        android:textSize="40px"
-        android:textColor="@color/black"
-        android:layout_alignParentTop = "true"
-        android:layout_centerHorizontal = "true"
-        android:layout_marginTop="80dp" />
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center_horizontal"
+        android:letterSpacing="0.025"
+        android:text="Exam"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
-        android:id="@+id/item_img"
-        android:layout_width="match_parent"
+        android:id="@+id/FExamTime"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textCursorDrawable="@null"
-        android:drawableStart="@drawable/ic_baseline_image_24"
-        android:drawableEnd="@drawable/ic_baseline_file_upload_24"
-        android:drawablePadding="5dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center|start"
         android:textColor="@color/white"
-        android:text="Upload image"
-        android:layout_marginRight="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="300dp"
-        android:padding="12dp"
-        android:clickable="true"
-        android:onClick="pick"
-        android:background="@color/colorPrimaryDark"
-        android:gravity="center" />
+        android:textSize="25sp"
+        android:text="00:00"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/create_item"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        android:layout_marginRight="80dp"
-        android:layout_marginLeft="80dp"
-        android:layout_marginTop="500dp"
-        android:elevation="10dp"
-        android:textColor="@color/white"
-        android:textSize="20dp"
-        android:onClick="uploadImage"
-        android:background="@drawable/btn_custom"
-        android:gravity="center"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/custom_rectangle_blank">
 
-</RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/questionView"
+            android:text="Question"
+            android:textSize="20dp"
+            android:maxWidth="500dp"
+            android:textColor="@color/black"
+            android:layout_alignParentTop = "true"
+            android:layout_centerHorizontal = "true"
+            android:layout_marginTop="80dp" />
+
+        <TextView
+            android:id="@+id/item_img"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textCursorDrawable="@null"
+            android:drawableStart="@drawable/ic_baseline_image_24"
+            android:drawableEnd="@drawable/ic_baseline_file_upload_24"
+            android:drawablePadding="5dp"
+            android:textColor="@color/white"
+            android:text="Upload PDF File"
+            android:layout_marginRight="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="300dp"
+            android:padding="12dp"
+            android:clickable="true"
+            android:onClick="pick"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/create_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:layout_marginRight="80dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="500dp"
+            android:elevation="10dp"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:onClick="uploadImage"
+            android:background="@drawable/btn_custom"
+            android:gravity="center"/>
+
+    </RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

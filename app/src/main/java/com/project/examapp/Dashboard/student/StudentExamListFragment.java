@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
@@ -23,7 +24,9 @@ import com.project.examapp.Api.StudentDashboardApi;
 import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.Dashboard.DashboardActivity;
 import com.project.examapp.Exam.ExamPageActivity;
+import com.project.examapp.Exam.FileUploadActivity;
 import com.project.examapp.R;
+import com.project.examapp.common.ProgressBarFragment;
 import com.project.examapp.models.Attempt;
 import com.project.examapp.models.Exam;
 import com.project.examapp.models.Student;
@@ -130,7 +133,7 @@ public class StudentExamListFragment extends Fragment {
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            if(!examList.get(i).isAttempted())
+                            if(examList.get(i).isAvailable())
                             {
                                 StartExamAlert(i);
                             }
@@ -153,15 +156,26 @@ public class StudentExamListFragment extends Fragment {
 
     public void toTakeExam(int i)
     {
+        Exam exam = adapter.getItem(i);
+        String exam_id = exam.getExam_id();
+        Integer time = exam.getTime();
+        Intent takeExamIntent;
 
-        String exam_id = adapter.getItem(i).getExam_id();
-        Integer time = adapter.getItem(i).getTime();
-        Intent takeExamIntent = new Intent(getActivity(), ExamPageActivity.class);
+        if((exam.getType()).equals("file"))
+        {
+            takeExamIntent = new Intent(getActivity(),FileUploadActivity.class);
+
+        }
+        else
+        {
+            takeExamIntent = new Intent(getActivity(), ExamPageActivity.class);
+        }
         takeExamIntent.putExtra("exam_id",exam_id);
         takeExamIntent.putExtra("student_id",student.getId());
         takeExamIntent.putExtra("time",time);
-        startActivity(takeExamIntent);
+        takeExamIntent.putExtra("question",exam.getQuestion());
         getActivity().finish();
+        startActivity(takeExamIntent);
     }
 
     private void StartExamAlert(int i) {

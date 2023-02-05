@@ -53,36 +53,38 @@ public class ExamsAdapter extends ArrayAdapter<Exam> {
         examDesc.setText(exam.getDescription());
         examSubject.setText(exam.getSubject_id());
 
-        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        String examDate = exam.getDate();
-        exam.setAttempted(true);
-        switch (currentDate.compareTo(examDate))
+        exam.setAvailable(false);
+
+        if(attempts.contains(exam.getExam_id()))
         {
-            case 0: if(attempts.contains(exam.getExam_id()))
-                    {
-                        examCond.setText("Attempted");
-                        examCond.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.attempted));
-                        examCond.setTextColor(Color.WHITE);
-                    }
-                    else
-                    {
-                        exam.setAttempted(false);
-                        examCond.setText("Unattempted");
-                        examCond.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.unattempted));
-                        examCond.setTextColor(Color.WHITE);
-                    }
-                break;
+            examCond.setText("Attempted");
+            examCond.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.attempted));
+            examCond.setTextColor(Color.WHITE);
+        }
+        else
+        {
+            String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            String examDate = exam.getDate();
 
-            case 1: examCond.setText("Over");
+            int value = (currentDate.compareTo(examDate));
+
+            if(value==0) {
+                exam.setAvailable(true);
+                examCond.setText("Unattempted");
+                examCond.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.unattempted));
+                examCond.setTextColor(Color.WHITE);
+            }
+            else if(value>0) {
+                examCond.setText("Over");
                 examCond.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.over));
-                break;
-
-            case -1: examCond.setText("Upcoming");
+            }
+            else {
+                examCond.setText("Upcoming");
                 examCond.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.forthcoming));
                 examCond.setTextColor(Color.WHITE);
-                break;
-        }
+            }
 
+        }
         // Return the completed view to render on screen
         return convertView;
     }
