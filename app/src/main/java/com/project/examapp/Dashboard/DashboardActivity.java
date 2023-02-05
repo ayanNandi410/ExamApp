@@ -3,8 +3,11 @@ package com.project.examapp.Dashboard;
 import static android.content.ContentValues.TAG;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -67,16 +70,26 @@ public class DashboardActivity extends AppCompatActivity {
         public void run() {
             if(!typeSetOrNot)
             {
-                if(!isInternetAvailable())
+                if(!isNetworkAvailable())
                 {
                     dialog.dismiss();
-                    toEmptyFragment("No internet available");
+                    toEmptyFragment("No Network");
                 }
-                getUserDetails();
+                else {
+                    dialog.show();
+                    getUserDetails();
+                }
             }
             handler.postAtTime(this,SystemClock.uptimeMillis()+8000 );
             }
         };
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -231,17 +244,6 @@ public class DashboardActivity extends AppCompatActivity {
 
         transaction.replace(R.id.fragment_dashboard, new ProgressBarFragment());
         transaction.commit();
-    }
-
-    public boolean isInternetAvailable() {
-        try {
-            InetAddress ipAddr = InetAddress.getByName("google.com");
-            //You can replace it with your name
-            return !ipAddr.equals("");
-
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     public void examListFrag(){

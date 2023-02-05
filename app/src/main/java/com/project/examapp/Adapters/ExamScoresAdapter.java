@@ -43,11 +43,13 @@ public class ExamScoresAdapter extends ArrayAdapter<Exam> {
         TextView examName = (TextView) convertView.findViewById(R.id.examSListName);
         TextView examDesc = (TextView) convertView.findViewById(R.id.examSListDesc);
         TextView examSubject = (TextView) convertView.findViewById(R.id.examSListSubject);
+        TextView examType = (TextView) convertView.findViewById(R.id.examSListType);
 
         // Populate the data into the template view using the data object
         examName.setText(exam.getExamName());
         examDesc.setText(exam.getDescription());
         examSubject.setText(exam.getSubject_id());
+        examType.setText(exam.getType().toUpperCase());
 
         // Return the completed view to render on screen
         return convertView;

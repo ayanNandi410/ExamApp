@@ -131,7 +131,7 @@ public class RegisterFragment extends Fragment {
                         {
                             Toast.makeText(getContext(), "Student Email Id not found", Toast.LENGTH_SHORT).show();
                         }
-                        else if(!student.getName().equals(text_name.getText().toString()))
+                        else if(!(student.getName().toLowerCase()).equals(text_name.getText().toString().toLowerCase()))
                         {
                             Toast.makeText(getContext(), "Student Name not matching", Toast.LENGTH_SHORT).show();
                         }
@@ -190,34 +190,41 @@ public class RegisterFragment extends Fragment {
     private boolean CheckAllFields() {
         if (text_name.length() == 0) {
             text_name.setError("This field is required");
+            Toast.makeText(getContext(), "Name is required", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (text_email.length() == 0) {
             text_email.setError("This field is required");
+            Toast.makeText(getContext(), "Email is required", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if(!android.util.Patterns.EMAIL_ADDRESS.matcher(text_email.getText().toString()).matches()){
             text_email.setError("Not an email address");
+            Toast.makeText(getContext(), "Not an email address", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (text_pswd.length() == 0) {
             text_pswd.setError("Password is required");
+            Toast.makeText(getContext(), "Password is required", Toast.LENGTH_SHORT).show();
             return false;
         } else if (text_pswd.length() < 8) {
             text_pswd.setError("Password must be minimum 8 characters");
+            Toast.makeText(getContext(), "Password must be minimum 8 characters", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if((text_pswd.length()!=0)&&(text_rep_pswd.length()!=0)&&(text_rep_pswd.getText().toString().compareTo(text_pswd.getText().toString())!=0)){
             text_rep_pswd.setError("Two passwords do not match");
+            Toast.makeText(getContext(), "Two passwords do not match", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if(type==null)
         {
+            Toast.makeText(getContext(), "User type not selected", Toast.LENGTH_SHORT).show();
             Toast.makeText(getContext(), "User type not selected", Toast.LENGTH_SHORT).show();
             return false;
         }

@@ -56,6 +56,18 @@
         android:padding="15dp"
         android:textSize="15sp" />
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/remMeBox"
+        android:layout_below="@id/et_password"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/remember_me"
+        android:textSize="15sp"
+        />
+
     <Button
         android:id="@+id/btn_login"
         android:layout_width="match_parent"

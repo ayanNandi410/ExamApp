@@ -41,11 +41,13 @@ public class ScoresAdapter extends ArrayAdapter<Result> {
         TextView examID = (TextView) convertView.findViewById(R.id.scoreExamId);
         TextView stName = (TextView) convertView.findViewById(R.id.scoreStudentName);
         TextView stMarks = (TextView) convertView.findViewById(R.id.scoreMarks);
+        TextView stTimestamp = (TextView) convertView.findViewById(R.id.scoreTimestamp);
         // Populate the data into the template view using the data object
         examID.setText(result.getExamId());
         String score = String.valueOf(result.getMarks())+"/"+String.valueOf(result.getTotal());
         stMarks.setText(score);
         stName.setText(result.getStudent_name());
+        stTimestamp.setText(result.getTimestamp());
 
         // Return the completed view to render on screen
         return convertView;

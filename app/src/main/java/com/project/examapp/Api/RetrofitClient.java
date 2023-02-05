@@ -13,15 +13,15 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private  static final String BASE_URL = "https://65f3-110-227-75-53.in.ngrok.io";                          // Base URL
+    private  static final String BASE_URL = "https://ea45-110-227-75-53.in.ngrok.io";                          // Base URL
     private static RetrofitClient mInstance;
     private final Retrofit retrofit;
-    private final OkHttpClient okHttpClient;
-    private FirebaseAuth mAuth;
+    private final FirebaseAuth mAuth;
 
     private RetrofitClient() {
         mAuth = FirebaseAuth.getInstance();
-        okHttpClient = new OkHttpClient.Builder()
+        //requestBuilder.header("x-id", user.getEmail());
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(new LoggingInterceptor()).addInterceptor(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain) throws IOException {

@@ -3,16 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Dashboard.student.StudentTeachersListFragment">
+    tools:context=".Dashboard.teacher.ShowExamFileFragment">
 
-    <ListView
-        android:id="@+id/stdTsListView"
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/custom_rectangle_blank"
-        android:padding="15sp"
-        android:layout_marginTop="20dp"
-        android:divider="@drawable/divider"
-        android:dividerHeight="10dp" />
+        android:text="@string/hello_blank_fragment" />
 
 </FrameLayout>

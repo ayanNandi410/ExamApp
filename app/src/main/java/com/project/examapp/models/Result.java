@@ -6,6 +6,7 @@ public class Result {
     private String exam_id;
     private int marks;
     private int total;
+    private  String timestamp;
 
     public String getStudentId() {
         return student_id;
@@ -45,5 +46,13 @@ public class Result {
 
     public void setTotal(int total) {
         this.total = total;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 }

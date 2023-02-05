@@ -34,8 +34,11 @@ import com.project.examapp.models.Question;
 
 import org.checkerframework.checker.units.qual.A;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -325,7 +328,10 @@ public class ExamQuestionFragment extends Fragment {
         slct.setBackgroundColor(getResources().getColor(R.color.selected));
     }
 
-    private void submitAnswers(){
+    private void submitAnswers()
+    {
+        String currDateTime = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date());
+        answers.get(0).setTimestamp(currDateTime);
 
         Call<ResponseBody> callAnswerPost = answerApi.postAnswers(answers);
         callAnswerPost.enqueue(new Callback<okhttp3.ResponseBody>() {

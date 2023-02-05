@@ -14,7 +14,7 @@
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="6dip"
+        android:layout_marginEnd="6dip"
         android:contentDescription="TODO"
         android:src="@drawable/score"/>
 
@@ -42,19 +42,31 @@
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/scoreMarks"
+        android:id="@+id/scoreTimestamp"
         android:layout_width="wrap_content"
-        android:layout_height="2dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:background="@drawable/rounded_corners"
+        android:backgroundTint="@color/gwhite"
+        android:gravity="center_vertical"
+        android:text="2/2/2023 03:40"
+        android:textSize="16sp"
+        android:paddingHorizontal="6dp"
+        android:layout_marginVertical="2dp"/>
+
+    <TextView
+        android:id="@+id/scoreMarks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_alignWithParentIfMissing="true"
         android:background="@drawable/rounded_corners"
         android:backgroundTint="@color/gwhite"
         android:gravity="center_vertical"
         android:text="0/20"
-        android:textSize="14sp"
+        android:textSize="18sp"
         android:paddingHorizontal="6dp"
-        android:layout_marginVertical="8dp"/>
+        android:layout_marginVertical="2dp"/>
 
 </RelativeLayout>

@@ -15,6 +15,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -71,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
                                                 Log.d(TAG, "User profile updated.");
+                                                Toast.makeText(MainActivity.this, "Registered successfully",
+                                                        Toast.LENGTH_SHORT).show();
                                                 sign_in();
                                                 //updateUI(user);
                                             }
@@ -79,11 +83,14 @@ public class MainActivity extends AppCompatActivity {
                                                 if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                                     Toast.makeText(MainActivity.this, "User with this email already exist.", Toast.LENGTH_SHORT).show();
                                                 }
+                                                else
+                                                {
+                                                    Toast.makeText(MainActivity.this, "Registration failed",
+                                                            Toast.LENGTH_SHORT).show();
+                                                }
                                                 Log.w(TAG, "createUserWithEmail:failure while assigning profile", task.getException());
                                                 delete_user(user);
                                                 sign_up();
-                                                Toast.makeText(MainActivity.this, "Registration failed",
-                                                        Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
@@ -97,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-        // [END create_user_with_email]
     }
 
     public void signIn(String email, String password) {
@@ -109,15 +115,24 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
+                            Toast.makeText(MainActivity.this, "Logged in successfully",
+                                    Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             dashboard();
                             //updateUI(user);
                         } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Failure, please check login details",
-                                    Toast.LENGTH_SHORT).show();
-                            //sign_up();
+                            if (task.getException() instanceof FirebaseAuthInvalidUserException) {
+                                Toast.makeText(MainActivity.this, "User not registered", Toast.LENGTH_SHORT).show();
+                                sign_up();
+                            } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                Toast.makeText(MainActivity.this, "Password invalid", Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                Toast.makeText(MainActivity.this, "Failure, please check login details",
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 });
@@ -156,12 +171,6 @@ public class MainActivity extends AppCompatActivity {
 
         transaction.replace(R.id.fragment_container_view, new RegisterFragment());
         transaction.commit();
-    }
-
-    public void sign_out()
-    {
-        mAuth.signOut();
-
     }
 
     public void delete_user(FirebaseUser user)

@@ -18,8 +18,7 @@
             android:padding="15sp"
             android:layout_marginTop="20dp"
             android:divider="@drawable/divider"
-            android:dividerHeight="10dp"
-            />
+            android:dividerHeight="10dp" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

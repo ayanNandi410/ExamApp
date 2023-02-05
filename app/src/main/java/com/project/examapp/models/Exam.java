@@ -11,7 +11,6 @@ public class Exam {
     private boolean isAvailable;
     private String type;
     private String question = "";
-
     public Exam(String name,String description, String subject_id)
     {
         this.name = name;

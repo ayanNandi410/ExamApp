@@ -6,6 +6,7 @@ public class Answer {
     private String exam_id;
     private String question_id;
     private String student_id;
+    private String timestamp;
 
     public Answer(String exam_id, String question_id, String student_id) {
         this.exam_id = exam_id;
@@ -45,5 +46,13 @@ public class Answer {
 
     public void setStudentId(String student_id) {
         this.student_id = student_id;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 }
