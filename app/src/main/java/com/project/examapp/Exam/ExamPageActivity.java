@@ -2,10 +2,13 @@ package com.project.examapp.Exam;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.project.examapp.Api.GetQuestionApi;
 import com.project.examapp.Api.ResultApi;
 import com.project.examapp.Api.RetrofitClient;
+import com.project.examapp.Dashboard.DashboardActivity;
 import com.project.examapp.common.ProgressBarFragment;
 import com.project.examapp.R;
 import com.project.examapp.models.MCQAnswer;
@@ -39,7 +43,7 @@ public class ExamPageActivity extends AppCompatActivity {
     ArrayList<MCQAnswer> MCQAnswers;
     FirebaseAuth mAuth;
     Integer time;
-
+    ProgressDialog dialog;
 
 
     @Override
@@ -63,11 +67,13 @@ public class ExamPageActivity extends AppCompatActivity {
         examName = findViewById(R.id.ExamName);
         examTime = findViewById(R.id.ExamTime);
         mAuth = FirebaseAuth.getInstance();
+        dialog = ProgressDialog.show(ExamPageActivity.this, "",
+                "Please wait...", true);
+        getQuestions();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    private void getQuestions()
+    {
         examName.setText(exam_id);
         showProgressBar();
         Call<ArrayList<Question>> callQuestionList = questionApi.getQuestions(exam_id);
@@ -75,11 +81,10 @@ public class ExamPageActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ArrayList<Question>> call, Response<ArrayList<Question>> response) {
                 if(response.isSuccessful()) {
-                    Toast.makeText(ExamPageActivity.this, "Question List fetched", Toast.LENGTH_SHORT).show();
                     qsList = response.body();
                     Log.e("QS List", String.valueOf(qsList.size()));
                     FirebaseUser user = mAuth.getCurrentUser();
-
+                    dialog.dismiss();
                     showExamFragment();
 
                 }
@@ -88,30 +93,10 @@ public class ExamPageActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ArrayList<Question>> call, Throwable t) {
                 Log.e("Fetch Question List","FAILURE");
+                Toast.makeText(ExamPageActivity.this, "Could not Fetch questions", Toast.LENGTH_SHORT).show();
+                endExam();
             }
         });
-        /*Call<ArrayList<Result>> callResultList = resultApi.getResults(exam_id);
-        callResultList.enqueue(new Callback<ArrayList<Result>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Result>> call, Response<ArrayList<Result>> response) {
-                if(response.isSuccessful()) {
-                    Toast.makeText(ExamPageActivity.this, "Results fetched", Toast.LENGTH_SHORT).show();
-                    results = response.body();
-                    FirebaseUser user = mAuth.getCurrentUser();
-
-                    //MCQAnswers = new ArrayList<MCQAnswer>();
-                    showQuestionFragment();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Result>> call, Throwable t) {
-                Log.e("Fetch Question List","FAILURE");
-                Log.e("Fetch Question list", t.toString());
-            }
-        });
-
-         */
     }
 
     private void showProgressBar(){
@@ -136,5 +121,12 @@ public class ExamPageActivity extends AppCompatActivity {
             qsFragment.setArguments(bundle);
             transaction.replace(R.id.questionSet, qsFragment);
             transaction.commit();
+    }
+
+    public void endExam()
+    {
+        Intent endExamintent = new Intent(ExamPageActivity.this, DashboardActivity.class);
+        this.finish();
+        startActivity(endExamintent);
     }
 }

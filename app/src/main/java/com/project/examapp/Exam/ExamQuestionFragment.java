@@ -54,14 +54,15 @@ public class ExamQuestionFragment extends Fragment {
     ArrayList<MCQChoice> MCQAnswers;
     TextView question, marks, examTime, progress;
     List<Button> selectedList;
-    Button a, b, c, d, prev, next, submit;
-    int pos;
+    Button a, b, c, d, prev, next, submit, clearChoice;
+    static int pos;
     String exam_id, student_id;
     Integer time, hr, min, sec, size;
     long endTime;
     Handler handler;
     ProgressBar progressBar;
     ProgressDialog dialog;
+    static int attempts;
 
     Runnable UpdateTimeTask = new Runnable() {
         @Override
@@ -111,7 +112,9 @@ public class ExamQuestionFragment extends Fragment {
         answerApi = client.getRetrofit().create(AnswerApi.class);
         questionApi = client.getRetrofit().create(GetQuestionApi.class);
         exam_id = this.getArguments().getString("exam_id");
+        pos = 0;
 
+        attempts=0;
         answerSet.setExamId(exam_id);
         answerSet.setStudentId(student_id);
         for(int i = 0;i < qsArray.size();i++){
@@ -141,10 +144,14 @@ public class ExamQuestionFragment extends Fragment {
         prev =  view.findViewById(R.id.prevQuestion);
         next =  view.findViewById(R.id.nextQuestion);
         submit = view.findViewById(R.id.submit);
+        clearChoice = view.findViewById(R.id.clearChoice);
         submit.setVisibility(View.INVISIBLE);
         prev.setVisibility(View.INVISIBLE);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         progress = (TextView) view.findViewById(R.id.progress);
+        dialog = ProgressDialog.show(getContext(), "",
+                "Submitting Answers.. Please wait...", true);
+        dialog.dismiss();
 
         startTimer(time);
         progressBar.setMax(size);
@@ -168,6 +175,12 @@ public class ExamQuestionFragment extends Fragment {
             }
         });
 
+        clearChoice.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearButtonChoice();
+            }
+        });
 
 
         a.setOnClickListener(new View.OnClickListener() {
@@ -203,8 +216,13 @@ public class ExamQuestionFragment extends Fragment {
                 EndExamAlert();
             }
         });
+    }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(UpdateTimeTask);
+        toDashBoardActivity();
     }
 
     private void startTimer(Integer time){
@@ -216,13 +234,23 @@ public class ExamQuestionFragment extends Fragment {
 
     private void stopTimer()
     {
-        registerAttemptAndSubmit();
+        submitAnswers();
     }
 
     private void setupSelected(){
         for(int i = 0;i < qsArray.size();i++){
             selectedList.add(null);
         }
+    }
+
+    private void clearButtonChoice()
+    {
+        Button selected = selectedList.get(pos);
+        selected.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        selectedList.set(pos,null);
+        MCQChoice a = MCQAnswers.get(pos);
+        a.setMcq("");
+        MCQAnswers.set(pos, a);
     }
 
     private void EndExamAlert() {
@@ -252,7 +280,7 @@ public class ExamQuestionFragment extends Fragment {
         // Set the positive button with yes name Lambda OnClickListener method is use of DialogInterface interface.
         builder.setPositiveButton("Submit", (DialogInterface.OnClickListener) (dialog, which) -> {
             // When the user click yes button then app will close
-            registerAttemptAndSubmit();
+            submitAnswers();
         });
 
         // Set the Negative button with No name Lambda OnClickListener method is use of DialogInterface interface.
@@ -268,7 +296,6 @@ public class ExamQuestionFragment extends Fragment {
     }
 
     private void startExam(){
-        pos = 0;
         setQuestionDetails(qsArray.get(pos));
     }
 
@@ -334,6 +361,8 @@ public class ExamQuestionFragment extends Fragment {
 
     private void submitAnswers()
     {
+        dialog.show();
+
         String currDateTime = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date());
         answerSet.setTimestamp(currDateTime);
 
@@ -343,21 +372,14 @@ public class ExamQuestionFragment extends Fragment {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()) {
                     Log.e("Submit Answers","SUCCESS");
-                    Toast.makeText(getContext(), "Answers submitted", Toast.LENGTH_LONG).show();
-                    Intent endExamintent = new Intent(getContext(), DashboardActivity.class);
-                    dialog.dismiss();
-                    getActivity().finish();
-
                     handler.removeCallbacks(UpdateTimeTask);
-
-                    startActivity(endExamintent);
+                    registerAttemptAndSubmit();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e("Submit Answers","FAILURE");
-                Log.e("Submit Answers",t.toString());
                 dialog.dismiss();
                 Toast.makeText(getContext(), "Failed to submit Answers", Toast.LENGTH_LONG).show();
             }
@@ -365,11 +387,14 @@ public class ExamQuestionFragment extends Fragment {
 
     }
 
+    private void toDashBoardActivity()
+    {
+        dialog.dismiss();
+        ((ExamPageActivity)getActivity()).endExam();
+    }
+
     private void registerAttemptAndSubmit()
     {
-        dialog = ProgressDialog.show(getContext(), "",
-                "Submitting Answers.. Please wait...", true);
-        dialog.show();
         Attempt attempt = new Attempt();
         attempt.setExam_id(exam_id);
         attempt.setStudent_id(student_id);
@@ -379,7 +404,8 @@ public class ExamQuestionFragment extends Fragment {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()) {
                     Log.e("Attempt Registration","SUCCESS");
-                    submitAnswers();
+                    Toast.makeText(getContext(), "Answers submitted", Toast.LENGTH_LONG).show();
+                    toDashBoardActivity();
                 }
             }
 
@@ -387,7 +413,15 @@ public class ExamQuestionFragment extends Fragment {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e("Submit Answers","FAILURE");
                 Log.e("Submit Answers",t.toString());
-                dialog.dismiss();
+                attempts++;
+                if(attempts<20)
+                {
+                    registerAttemptAndSubmit();
+                }
+                else
+                {
+                    dialog.dismiss();
+                }
                 Toast.makeText(getContext(), "Failed to register attempt", Toast.LENGTH_LONG).show();
             }
         });

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,170 +7,193 @@
     tools:context=".Exam.ExamQuestionFragment"
     android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/parentLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/progress"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:text="1/20"
-            android:textSize="18dp"
-            app:layout_constraintBottom_toTopOf="@id/progressBar"
-            android:layout_marginBottom="0dp"
-            android:paddingVertical="0dp"/>
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="270dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/submit"
-            app:layout_constraintTop_toBottomOf="@id/progress"
-            android:layout_alignParentTop="true"
-            android:indeterminate="false"
-            android:max="100"
-            android:minHeight="10dp"
-            android:minWidth="200dp"
-            android:progress="1"
-            android:layout_marginVertical="0dp"/>
-
-        <Button
-            android:id="@+id/submit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Submit Exam"
-            app:layout_constraintBottom_toTopOf="@id/question"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/progressBar"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintVertical_bias="0.929"
-            android:layout_marginStart="200dp"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/selected"/>
-
-        <LinearLayout
-            android:id="@+id/question"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="130dp"
-            android:layout_marginEnd="15dp"
-            android:orientation="vertical"
-            android:padding="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-
             <TextView
-                android:id="@+id/questionTextMark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="20dp"
-                android:text="Q.  What is the name of this flower ??"
-                android:textSize="20dp" />
+                android:id="@+id/progress"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="1/20"
+                android:textSize="18dp"
+                app:layout_constraintBottom_toTopOf="@id/progressBar"
+                android:layout_marginTop="8dp"
+                android:paddingVertical="0dp"/>
 
-
-            <TextView
-                android:id="@+id/qsMarks"
-                android:layout_width="wrap_content"
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="270dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="Marks : 34" />
-
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/submit"
+                app:layout_constraintTop_toBottomOf="@id/progress"
+                android:layout_alignParentTop="true"
+                android:indeterminate="false"
+                android:max="100"
+                android:minHeight="10dp"
+                android:minWidth="200dp"
+                android:progress="1"
+                android:layout_marginVertical="3dp"/>
 
             <Button
-                android:id="@+id/choice1Button"
+                android:id="@+id/submit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/colorPrimary"
-                android:text="Choice 1"
-                android:textColor="@color/white"/>
+                android:text="Submit Exam"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/progressBar"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintVertical_bias="0.929"
+                android:layout_marginStart="200dp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/selected"/>
 
-            <Button
-                android:id="@+id/choice2Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/colorPrimary"
-                android:text="Choice 2"
-                android:textColor="@color/white"/>
-
-            <Button
-                android:id="@+id/choice3Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/colorPrimary"
-                android:text="Choice 3"
-                android:textColor="@color/white"/>
-
-            <Button
-                android:id="@+id/choice4Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/colorPrimary"
-                android:text="Choice 4"
-                android:textColor="@color/white"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/movButtons"
-            android:layout_width="344dp"
-            android:layout_height="96dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="105dp"
+            android:paddingBottom="30dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.238"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/question"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintTop_toBottomOf="@id/submit"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-            <Button
-                android:id="@+id/prevQuestion"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/qsLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="30dp"
-                android:backgroundTint="@color/colorPrimary"
-                android:text="Prev"
-                android:textColor="@color/white"/>
+                android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/nextQuestion"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="100dp"
-                android:backgroundTint="@color/colorPrimary"
-                android:text="Next"
-                android:textColor="@color/white"/>
+                <LinearLayout
+                    android:id="@+id/question"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-        </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+                    <TextView
+                        android:id="@+id/questionTextMark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="20dp"
+                        android:text="Q. What is the name of this flower ??"
+                        android:textSize="20dp" />
+
+
+                    <TextView
+                        android:id="@+id/qsMarks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="5dp"
+                        android:text="Marks : 34" />
+
+
+                    <Button
+                        android:id="@+id/choice1Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="25dp"
+                        android:layout_marginBottom="10dp"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:text="Choice 1"
+                        android:textColor="@color/white"/>
+
+                    <Button
+                        android:id="@+id/choice2Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="10dp"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:text="Choice 2"
+                        android:textColor="@color/white"/>
+
+                    <Button
+                        android:id="@+id/choice3Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="10dp"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:text="Choice 3"
+                        android:textColor="@color/white"/>
+
+                    <Button
+                        android:id="@+id/choice4Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="10dp"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:text="Choice 4"
+                        android:textColor="@color/white"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/movButtons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/question"
+                    app:layout_constraintVertical_bias="0.0">
+
+                    <Button
+                        android:id="@+id/prevQuestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:text="Prev"
+                        android:textColor="@color/white"/>
+
+                    <Button
+                        android:id="@+id/nextQuestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="100dp"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:text="Next"
+                        android:textColor="@color/white"/>
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/clearChoice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/forthcoming"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/movButtons"
+                    android:layout_marginTop="10dp"
+                    android:text="Clear Choice"
+                    android:textColor="@color/white"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
