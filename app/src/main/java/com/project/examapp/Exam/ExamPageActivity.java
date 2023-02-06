@@ -34,9 +34,7 @@ public class ExamPageActivity extends AppCompatActivity {
     String exam_id, student_id, type, question;
     ExamApi examApi;
     ArrayList<Question> qsList;
-    List<Result> results;
     TextView examName, examTime;
-    ArrayList<MCQAnswer> MCQAnswers;
     FirebaseAuth mAuth;
     Integer time;
     ProgressDialog dialog;
@@ -74,11 +72,14 @@ public class ExamPageActivity extends AppCompatActivity {
             public void onResponse(Call<ArrayList<Question>> call, Response<ArrayList<Question>> response) {
                 if(response.isSuccessful()) {
                     qsList = response.body();
-                    Log.e("QS List", String.valueOf(qsList.size()));
+                    if(qsList.size()==0)
+                    {
+                        Toast.makeText(ExamPageActivity.this, "No questions in server yet", Toast.LENGTH_SHORT).show();
+                        endExam();
+                    }
                     FirebaseUser user = mAuth.getCurrentUser();
                     dialog.dismiss();
                     showExamFragment();
-
                 }
             }
 
