@@ -2,20 +2,17 @@ package com.project.examapp.Exam;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.project.examapp.Api.GetQuestionApi;
-import com.project.examapp.Api.ResultApi;
+import com.project.examapp.Api.ExamApi;
 import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.Dashboard.DashboardActivity;
 import com.project.examapp.common.ProgressBarFragment;
@@ -35,8 +32,7 @@ public class ExamPageActivity extends AppCompatActivity {
 
     RetrofitClient client;
     String exam_id, student_id, type, question;
-    GetQuestionApi questionApi;
-    ResultApi resultApi;
+    ExamApi examApi;
     ArrayList<Question> qsList;
     List<Result> results;
     TextView examName, examTime;
@@ -51,8 +47,7 @@ public class ExamPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam_page);
         client = RetrofitClient.getInstance();
-        questionApi = client.getRetrofit().create(GetQuestionApi.class);
-        resultApi = client.getRetrofit().create(ResultApi.class);
+        examApi = client.getRetrofit().create(ExamApi.class);
         // get exam id
         Intent intent = getIntent();
         exam_id = intent.getStringExtra("exam_id");
@@ -60,9 +55,6 @@ public class ExamPageActivity extends AppCompatActivity {
         student_id = intent.getStringExtra("student_id");
         type = intent.getStringExtra("type");
         question = intent.getStringExtra("question");
-
-        client = RetrofitClient.getInstance();
-        questionApi = client.getRetrofit().create(GetQuestionApi.class);
 
         examName = findViewById(R.id.ExamName);
         examTime = findViewById(R.id.ExamTime);
@@ -76,7 +68,7 @@ public class ExamPageActivity extends AppCompatActivity {
     {
         examName.setText(exam_id);
         showProgressBar();
-        Call<ArrayList<Question>> callQuestionList = questionApi.getQuestions(exam_id);
+        Call<ArrayList<Question>> callQuestionList = examApi.getQuestions(exam_id);
         callQuestionList.enqueue(new Callback<java.util.ArrayList<Question>>() {
             @Override
             public void onResponse(Call<ArrayList<Question>> call, Response<ArrayList<Question>> response) {

@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.project.examapp.Api.AnswerApi;
+import com.project.examapp.Api.ExamApi;
 import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.Constants;
 import com.project.examapp.Dashboard.DashboardActivity;
@@ -30,7 +30,7 @@ import retrofit2.Response;
 public class ShowExamFileFragment extends Fragment {
 
     private Result StdSubmission;
-    private AnswerApi api;
+    private ExamApi api;
     private RetrofitClient client;
     private String fName;
     private TextView answerText, exmID, stdName, timestamp, btnDownload;
@@ -43,7 +43,7 @@ public class ShowExamFileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         client = RetrofitClient.getInstance();
-        api = client.getRetrofit().create(AnswerApi.class);
+        api = client.getRetrofit().create(ExamApi.class);
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true ) {
             @Override

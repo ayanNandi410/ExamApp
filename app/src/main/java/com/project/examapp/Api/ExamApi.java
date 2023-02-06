@@ -3,6 +3,7 @@ package com.project.examapp.Api;
 import com.project.examapp.models.Attempt;
 import com.project.examapp.models.FileAnswer;
 import com.project.examapp.models.MCQAnswer;
+import com.project.examapp.models.Question;
 
 import java.util.ArrayList;
 
@@ -18,7 +19,10 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 
-public interface AnswerApi {
+public interface ExamApi {
+
+    @GET("question/{examId}")
+    Call<ArrayList<Question>> getQuestions(@Path("examId") String examId);
     @Headers("Content-Type: application/json")
     @POST("/answer")
     Call<ResponseBody> postAnswers(@Body MCQAnswer body);

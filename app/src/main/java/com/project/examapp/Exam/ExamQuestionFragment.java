@@ -2,7 +2,6 @@ package com.project.examapp.Exam;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,10 +21,8 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.project.examapp.Api.AnswerApi;
-import com.project.examapp.Api.GetQuestionApi;
+import com.project.examapp.Api.ExamApi;
 import com.project.examapp.Api.RetrofitClient;
-import com.project.examapp.Dashboard.DashboardActivity;
 import com.project.examapp.R;
 import com.project.examapp.models.Attempt;
 import com.project.examapp.models.MCQAnswer;
@@ -47,8 +44,7 @@ public class ExamQuestionFragment extends Fragment {
 
     RetrofitClient client;
     FirebaseAuth mAuth;
-    AnswerApi answerApi;
-    GetQuestionApi questionApi;
+    ExamApi examApi;
     ArrayList<Question> qsArray;
     MCQAnswer answerSet;
     ArrayList<MCQChoice> MCQAnswers;
@@ -109,8 +105,7 @@ public class ExamQuestionFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         client = RetrofitClient.getInstance();
-        answerApi = client.getRetrofit().create(AnswerApi.class);
-        questionApi = client.getRetrofit().create(GetQuestionApi.class);
+        examApi = client.getRetrofit().create(ExamApi.class);
         exam_id = this.getArguments().getString("exam_id");
         pos = 0;
 
@@ -366,7 +361,7 @@ public class ExamQuestionFragment extends Fragment {
         String currDateTime = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date());
         answerSet.setTimestamp(currDateTime);
 
-        Call<ResponseBody> callAnswerPost = answerApi.postAnswers(answerSet);
+        Call<ResponseBody> callAnswerPost = examApi.postAnswers(answerSet);
         callAnswerPost.enqueue(new Callback<okhttp3.ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -398,7 +393,7 @@ public class ExamQuestionFragment extends Fragment {
         Attempt attempt = new Attempt();
         attempt.setExam_id(exam_id);
         attempt.setStudent_id(student_id);
-        Call<ResponseBody> callAttemptPost = answerApi.postAttempt(attempt);
+        Call<ResponseBody> callAttemptPost = examApi.postAttempt(attempt);
         callAttemptPost.enqueue(new Callback<okhttp3.ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

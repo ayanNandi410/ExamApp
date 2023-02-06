@@ -27,7 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.project.examapp.Api.AnswerApi;
+import com.project.examapp.Api.ExamApi;
 import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.Dashboard.DashboardActivity;
 import com.project.examapp.R;
@@ -55,7 +55,7 @@ public class FileUploadActivity extends AppCompatActivity {
     Uri selectedFile;
     String part_image, examTime, examId, studentId;
     ProgressDialog dialog;
-    AnswerApi api;
+    ExamApi api;
 
     RetrofitClient client;
     // Permissions for accessing the storage
@@ -126,7 +126,7 @@ public class FileUploadActivity extends AppCompatActivity {
         setContentView(R.layout.activity_file_upload);
 
         client = RetrofitClient.getInstance();
-        api = client.getRetrofit().create(AnswerApi.class);
+        api = client.getRetrofit().create(ExamApi.class);
 
         qs = findViewById(R.id.questionView);
         imgPath = findViewById(R.id.item_img);
@@ -136,7 +136,7 @@ public class FileUploadActivity extends AppCompatActivity {
         handler = new Handler();
 
         Bundle b = getIntent().getExtras();
-        qs.setText(b.getString("question"));
+        qs.setText("Q. "+b.getString("question"));
         examId = b.getString("exam_id");
         studentId = b.getString("student_id");
         time = b.getInt("time");
