@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -43,6 +44,14 @@ public class ShowExamFileFragment extends Fragment {
         super.onCreate(savedInstanceState);
         client = RetrofitClient.getInstance();
         api = client.getRetrofit().create(AnswerApi.class);
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true ) {
+            @Override
+            public void handleOnBackPressed() {
+                ((DashboardActivity)getActivity()).examScoresFrag();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override
@@ -102,7 +111,7 @@ public class ShowExamFileFragment extends Fragment {
             public void onFailure(Call<FileAnswer> call, Throwable t) {
                 Log.e("Fetch Exam List","FAILURE");
                 dialog.dismiss();
-                ((DashboardActivity)getActivity()).toEmptyFragment("Some error occurred");
+                ((DashboardActivity)getActivity()).toEmptyFragment("Some error occurred","ExamScores");
             }
         });
     }

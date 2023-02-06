@@ -2,6 +2,7 @@ package com.project.examapp.common;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -18,14 +19,35 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class EmptyFragment extends Fragment {
 
     String text = "Nothing to Show";
-
-    public EmptyFragment(String text) {
+    String back;
+    public EmptyFragment(String text,String back) {
         this.text = text;
+        this.back = back;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true ) {
+            @Override
+            public void handleOnBackPressed() {
+                if(back.equals("dashboard"))
+                {
+                    ((DashboardActivity)getActivity()).toDashboard();
+                }
+                else if(back.equals("ExamScores"))
+                {
+                    ((DashboardActivity)getActivity()).examScoresFrag();
+                }
+                else
+                {
+                    ((DashboardActivity)getActivity()).HomeBackPress();
+                }
+
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override

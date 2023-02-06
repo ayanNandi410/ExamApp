@@ -143,7 +143,7 @@ public class FileUploadActivity extends AppCompatActivity {
         exmName.setText(examId);
 
         btn_upload.setOnClickListener(v -> {
-           registerAttemptAndSubmit();
+           uploadImage();
         });
         startTimer(time);
     }
@@ -170,9 +170,6 @@ public class FileUploadActivity extends AppCompatActivity {
 
     private void registerAttemptAndSubmit()
     {
-        dialog = ProgressDialog.show(FileUploadActivity.this, "",
-                "Submitting.. Please wait...", true);
-        dialog.show();
         Attempt attempt = new Attempt();
         attempt.setExam_id(examId);
         attempt.setStudent_id(studentId);
@@ -182,14 +179,13 @@ public class FileUploadActivity extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()) {
                     Log.e("Attempt Registration","SUCCESS");
-                    uploadImage();
+                    toDashboard();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e("Submit Answers","FAILURE");
-                Log.e("Submit Answers",t.toString());
                 dialog.dismiss();
                 Toast.makeText(FileUploadActivity.this, "Failed to register attempt", Toast.LENGTH_LONG).show();
             }
@@ -198,11 +194,16 @@ public class FileUploadActivity extends AppCompatActivity {
 
     // Upload the image to the remote database
     public void uploadImage() {
+
         if(part_image==null)
         {
             Toast.makeText(FileUploadActivity.this, "Please use different app for uploading", Toast.LENGTH_SHORT).show();
             return;
         }
+        dialog = ProgressDialog.show(FileUploadActivity.this, "",
+                "Submitting.. Please wait...", true);
+        dialog.show();
+
         File imageFile = new File(part_image);// Create a file using the absolute path of the image
 
         RequestBody reqBody = RequestBody.create(MediaType.parse("multipart/form-file"), imageFile);
@@ -220,7 +221,7 @@ public class FileUploadActivity extends AppCompatActivity {
                 if(response.isSuccessful()) {
                     Log.e("File Upload","SUCCESS");
                     Toast.makeText(FileUploadActivity.this, "File Uploaded", Toast.LENGTH_SHORT).show();
-                    toDashboard();
+                    registerAttemptAndSubmit();
                 }
             }
 

@@ -3,6 +3,7 @@ package com.project.examapp.Dashboard;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -49,6 +50,14 @@ public class SubjectsFragment extends Fragment {
         //Retrofit call
         client = RetrofitClient.getInstance();
         studentDashboardApi = client.getRetrofit().create(StudentDashboardApi.class);
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true ) {
+            @Override
+            public void handleOnBackPressed() {
+                ((DashboardActivity)getActivity()).toDashboard();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override
@@ -87,7 +96,7 @@ public class SubjectsFragment extends Fragment {
             public void onFailure(Call<ArrayList<Subject>> call, Throwable t) {
                 Log.e("Fetch Subject List","FAILURE");
                 dialog.dismiss();
-                ((DashboardActivity)getActivity()).toEmptyFragment("Some error occurred");
+                ((DashboardActivity)getActivity()).toEmptyFragment("Some error occurred","dashboard");
             }
         });
     }

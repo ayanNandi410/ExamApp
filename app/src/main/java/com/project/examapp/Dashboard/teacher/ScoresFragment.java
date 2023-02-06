@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
@@ -56,6 +57,14 @@ public class ScoresFragment extends Fragment {
         {
             ((DashboardActivity) getActivity()).setTitle("Exam Submissions ");
         }
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true ) {
+            @Override
+            public void handleOnBackPressed() {
+                ((DashboardActivity)getActivity()).examScoresFrag();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override
@@ -86,7 +95,7 @@ public class ScoresFragment extends Fragment {
                     if(scoresList.size()==0)
                     {
                         dialog.dismiss();
-                        ((DashboardActivity)getActivity()).toEmptyFragment("No scores available");
+                        ((DashboardActivity)getActivity()).toEmptyFragment("No scores available","ExamScores");
                     }
 
                     // Create the adapter to convert the array to views
@@ -116,7 +125,7 @@ public class ScoresFragment extends Fragment {
             public void onFailure(Call<ArrayList<Result>> call, Throwable t) {
                 Log.e("Fetch Exam List","FAILURE");
                 dialog.dismiss();
-                ((DashboardActivity)getActivity()).toEmptyFragment("Some error occurred");
+                ((DashboardActivity)getActivity()).toEmptyFragment("Some error occurred","ExamScores");
             }
         });
     }

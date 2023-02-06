@@ -45,8 +45,6 @@ import com.project.examapp.models.Student;
 import com.project.examapp.models.Teacher;
 import com.project.examapp.models.User;
 
-import java.net.InetAddress;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -73,7 +71,7 @@ public class DashboardActivity extends AppCompatActivity {
             if (!typeSetOrNot) {
                 if (!isNetworkAvailable()) {
                     dialog.dismiss();
-                    toEmptyFragment("No Network");
+                    toEmptyFragment("No Network","home");
                 } else {
                     dialog.show();
                     getUserDetails();
@@ -137,9 +135,9 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (homeActive) {
-                    BackPress();
+                    HomeBackPress();
                 } else {
-                    toDashboard();
+                    DashboardActivity.super.onBackPressed();
                 }
             }
         });
@@ -177,7 +175,7 @@ public class DashboardActivity extends AppCompatActivity {
                         typeSetOrNot = true;
                         toDashboard();
                     } else {
-                        toEmptyFragment("Some error occurred");
+                        toEmptyFragment("Some error occurred","home");
                     }
                 }
             }
@@ -193,7 +191,7 @@ public class DashboardActivity extends AppCompatActivity {
         title.setText(titleText);
     }
 
-    private void BackPress() {
+    public void HomeBackPress() {
         // Create the object of AlertDialog Builder class
         AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
 
@@ -281,7 +279,7 @@ public class DashboardActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    private void toDashboard() {
+    public void toDashboard() {
         handler.removeCallbacks(FetchDetailsTask);
         title.setText("Dashboard");
         homeActive = true;
@@ -316,10 +314,10 @@ public class DashboardActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    public void toEmptyFragment(String text) {
+    public void toEmptyFragment(String text,String back) {
         homeActive = false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        EmptyFragment fragment = new EmptyFragment(text);
+        EmptyFragment fragment = new EmptyFragment(text,back);
         transaction.replace(R.id.fragment_dashboard, fragment);
         transaction.commit();
     }

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -60,6 +61,14 @@ public class StudentExamListFragment extends Fragment {
         client = RetrofitClient.getInstance();
         studentDashboardApi = client.getRetrofit().create(StudentDashboardApi.class);
         ((DashboardActivity) getActivity()).setTitle("Exam List");
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true ) {
+            @Override
+            public void handleOnBackPressed() {
+                ((DashboardActivity)getActivity()).toDashboard();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override
@@ -109,6 +118,7 @@ public class StudentExamListFragment extends Fragment {
             public void onFailure(Call<ArrayList<Exam>> call, Throwable t) {
                 Log.e("Fetch Exam List","FAILURE");
                 Log.e("Fetch Exam list", t.toString());
+                ((DashboardActivity)getActivity()).toEmptyFragment("Some error occurred","dashboard");
             }
         });
     }
