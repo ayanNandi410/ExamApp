@@ -29,6 +29,7 @@ import com.project.examapp.Dashboard.DashboardActivity;
 import com.project.examapp.R;
 import com.project.examapp.models.Attempt;
 import com.project.examapp.models.MCQAnswer;
+import com.project.examapp.models.MCQChoice;
 import com.project.examapp.models.Question;
 
 import java.text.SimpleDateFormat;
@@ -49,7 +50,8 @@ public class ExamQuestionFragment extends Fragment {
     AnswerApi answerApi;
     GetQuestionApi questionApi;
     ArrayList<Question> qsArray;
-    ArrayList<MCQAnswer> MCQAnswers;
+    MCQAnswer answerSet;
+    ArrayList<MCQChoice> MCQAnswers;
     TextView question, marks, examTime, progress;
     List<Button> selectedList;
     Button a, b, c, d, prev, next, submit;
@@ -89,15 +91,17 @@ public class ExamQuestionFragment extends Fragment {
     public ExamQuestionFragment(ArrayList<Question> qsArray,Integer time, String student_id) {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-
         handler = new Handler();
 
         this.student_id = student_id;
         this.time = time;
         this.qsArray = qsArray;
         this.size = qsArray.size();
-        this.MCQAnswers = new ArrayList<MCQAnswer>();
-       selectedList  = new ArrayList<Button>();
+
+        this.MCQAnswers = new ArrayList<MCQChoice>();
+        this.answerSet = new MCQAnswer(exam_id,student_id);
+        this.answerSet.setChoiceList(MCQAnswers);
+        selectedList  = new ArrayList<Button>();
     }
 
     @Override
@@ -107,10 +111,13 @@ public class ExamQuestionFragment extends Fragment {
         answerApi = client.getRetrofit().create(AnswerApi.class);
         questionApi = client.getRetrofit().create(GetQuestionApi.class);
         exam_id = this.getArguments().getString("exam_id");
+
+        answerSet.setExamId(exam_id);
+        answerSet.setStudentId(student_id);
         for(int i = 0;i < qsArray.size();i++){
             Question q = qsArray.get(i);
-            MCQAnswer a = new MCQAnswer(exam_id, q.getId(), student_id);
-            MCQAnswers.add(a);
+            MCQChoice choice = new MCQChoice(q.getId());
+            MCQAnswers.add(choice);
         }
     }
 
@@ -319,7 +326,7 @@ public class ExamQuestionFragment extends Fragment {
             selectedList.get(pos).setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         }
         selectedList.set(pos, slct);
-        MCQAnswer a = MCQAnswers.get(pos);
+        MCQChoice a = MCQAnswers.get(pos);
         a.setMcq(answer);
         MCQAnswers.set(pos, a);
         slct.setBackgroundColor(getResources().getColor(R.color.selected));
@@ -328,9 +335,9 @@ public class ExamQuestionFragment extends Fragment {
     private void submitAnswers()
     {
         String currDateTime = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date());
-        MCQAnswers.get(0).setTimestamp(currDateTime);
+        answerSet.setTimestamp(currDateTime);
 
-        Call<ResponseBody> callAnswerPost = answerApi.postAnswers(MCQAnswers);
+        Call<ResponseBody> callAnswerPost = answerApi.postAnswers(answerSet);
         callAnswerPost.enqueue(new Callback<okhttp3.ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

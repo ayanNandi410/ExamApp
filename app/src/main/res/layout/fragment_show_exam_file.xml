@@ -17,7 +17,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginTop="40dp"
             android:layout_marginStart="20dp"
-            android:textSize="15dp" />
+            android:textSize="17dp" />
 
         <TextView
             android:id="@+id/answerExamID"
@@ -27,7 +27,7 @@
             android:layout_below="@id/answerStName"
             android:layout_marginBottom="10dp"
             android:layout_marginStart="20dp"
-            android:textSize="15dp"/>
+            android:textSize="17dp"/>
 
         <TextView
             android:id="@+id/answerTimestamp"
@@ -36,6 +36,7 @@
             android:text="Timestamp : 11:11 PM"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="40dp"
+            android:textSize="17dp"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"
             android:layout_centerHorizontal="true"/>

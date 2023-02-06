@@ -1,25 +1,16 @@
 package com.project.examapp.models;
 
+import java.util.ArrayList;
+
 public class MCQAnswer {
-    private String mcq;
     private String exam_id;
-    private String question_id;
     private String student_id;
     private String timestamp;
+    private ArrayList<MCQChoice> choiceList;
 
-    public MCQAnswer(String exam_id, String question_id, String student_id) {
+    public MCQAnswer(String exam_id, String student_id) {
         this.exam_id = exam_id;
-        this.question_id = question_id;
         this.student_id = student_id;
-        this.mcq = "";
-    }
-
-    public String getMcq() {
-        return mcq;
-    }
-
-    public void setMcq(String mcq) {
-        this.mcq = mcq;
     }
 
     public String getExamId() {
@@ -28,14 +19,6 @@ public class MCQAnswer {
 
     public void setExamId(String exam_id) {
         this.exam_id = exam_id;
-    }
-
-    public String getQuestionId() {
-        return question_id;
-    }
-
-    public void setQuestionId(String question_id) {
-        this.question_id = question_id;
     }
 
     public String getStudentId() {
@@ -52,5 +35,13 @@ public class MCQAnswer {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public ArrayList<MCQChoice> getChoiceList() {
+        return choiceList;
+    }
+
+    public void setChoiceList(ArrayList<MCQChoice> choiceList) {
+        this.choiceList = choiceList;
     }
 }

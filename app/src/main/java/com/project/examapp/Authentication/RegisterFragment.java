@@ -161,7 +161,7 @@ public class RegisterFragment extends Fragment {
                         {
                             Toast.makeText(getContext(), "Teacher Email Id not found", Toast.LENGTH_SHORT).show();
                         }
-                        else if(!teacher.getName().equals(text_name.getText().toString()))
+                        else if(!(teacher.getName().toLowerCase()).equals(text_name.getText().toString().toLowerCase()))
                         {
                             Toast.makeText(getContext(), "Teacher Name not matching", Toast.LENGTH_SHORT).show();
                         }

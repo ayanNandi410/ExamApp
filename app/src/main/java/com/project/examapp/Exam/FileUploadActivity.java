@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -26,10 +27,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.project.examapp.Api.FileUploadApi;
+import com.project.examapp.Api.AnswerApi;
 import com.project.examapp.Api.RetrofitClient;
 import com.project.examapp.Dashboard.DashboardActivity;
 import com.project.examapp.R;
+import com.project.examapp.models.Attempt;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -52,7 +54,10 @@ public class FileUploadActivity extends AppCompatActivity {
     Button btn_upload;
     Uri selectedFile;
     String part_image, examTime, examId, studentId;
+    ProgressDialog dialog;
+    AnswerApi api;
 
+    RetrofitClient client;
     // Permissions for accessing the storage
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static final String[] PERMISSIONS_STORAGE = {
@@ -120,6 +125,9 @@ public class FileUploadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_upload);
 
+        client = RetrofitClient.getInstance();
+        api = client.getRetrofit().create(AnswerApi.class);
+
         qs = findViewById(R.id.questionView);
         imgPath = findViewById(R.id.item_img);
         btn_upload = findViewById(R.id.create_item);
@@ -135,7 +143,7 @@ public class FileUploadActivity extends AppCompatActivity {
         exmName.setText(examId);
 
         btn_upload.setOnClickListener(v -> {
-            uploadImage();
+           registerAttemptAndSubmit();
         });
         startTimer(time);
     }
@@ -160,7 +168,33 @@ public class FileUploadActivity extends AppCompatActivity {
         someActivityResultLauncher.launch(intent);
     }
 
+    private void registerAttemptAndSubmit()
+    {
+        dialog = ProgressDialog.show(FileUploadActivity.this, "",
+                "Submitting.. Please wait...", true);
+        dialog.show();
+        Attempt attempt = new Attempt();
+        attempt.setExam_id(examId);
+        attempt.setStudent_id(studentId);
+        Call<ResponseBody> callAttemptPost = api.postAttempt(attempt);
+        callAttemptPost.enqueue(new Callback<okhttp3.ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()) {
+                    Log.e("Attempt Registration","SUCCESS");
+                    uploadImage();
+                }
+            }
 
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("Submit Answers","FAILURE");
+                Log.e("Submit Answers",t.toString());
+                dialog.dismiss();
+                Toast.makeText(FileUploadActivity.this, "Failed to register attempt", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
     // Upload the image to the remote database
     public void uploadImage() {
@@ -179,12 +213,12 @@ public class FileUploadActivity extends AppCompatActivity {
         String currDateTime = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date());
         RequestBody timestamp = RequestBody.create(MediaType.parse("text/plain"),currDateTime);
 
-        FileUploadApi api = RetrofitClient.getInstance().getAPI();
         Call<ResponseBody> upload = api.uploadAnswerImage(partImage, examID,studentID,timestamp);
         upload.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()) {
+                    Log.e("File Upload","SUCCESS");
                     Toast.makeText(FileUploadActivity.this, "File Uploaded", Toast.LENGTH_SHORT).show();
                     toDashboard();
                 }
@@ -192,7 +226,9 @@ public class FileUploadActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(FileUploadActivity.this, "Request failed", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                Log.e("File Upload","FAILURE");
+                Toast.makeText(FileUploadActivity.this, "File Upload failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -220,6 +256,7 @@ public class FileUploadActivity extends AppCompatActivity {
 
     private void toDashboard()
     {
+        dialog.dismiss();
         Toast.makeText(FileUploadActivity.this, "Exam Ended", Toast.LENGTH_SHORT).show();
         Intent endExamIntent = new Intent(this, DashboardActivity.class);
         this.finish();

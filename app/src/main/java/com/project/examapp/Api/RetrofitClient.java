@@ -46,11 +46,6 @@ public class RetrofitClient {
         }
         return mInstance;
     }
-
-    public FileUploadApi getAPI() {
-        return retrofit.create(FileUploadApi.class);
-    }
-
     public Retrofit getRetrofit()
     {
         return retrofit;
