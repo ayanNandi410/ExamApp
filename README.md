@@ -9,7 +9,7 @@ Tech used: Android Studio | Java | XML | Firebase
 
 ## Home Page
 
-![1](https://github.com/ayanNandi410/ExamApp/assets/110126109/1a15fef4-769b-4a47-8a22-f0c6ff694bf5)
+![1](https://github.com/ayanNandi410/ExamApp/assets/110126109/1a15fef4-769b-4a47-8a22-f0c6ff694bf5 | width=100)
 
 ## Student Section
 
